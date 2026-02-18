@@ -109,7 +109,6 @@ ventas_filtradas = df[(df['sucursal'] == 'Centro') & (df['precio_unitario'] > 25
 df.loc[df.loc[:,'genre'] == 'Rock'] #completa /completa
 
 #------------ CAMBIAR NOMBRE DE COLUMNAS----------------
-
 new_columns ={ #nombre anterior : nuevo nombre
     '  user_id': 'user_id', 
     'total play': 'total_play',
@@ -143,15 +142,6 @@ df['name'].nunique() #da el numero de valores unicos, devuelve entero
 df['col_1'].value_counts(dropna=False) #Incluira los valores None o NaN si es False
 df['col_1'].value_counts(ascending=True) #contar valores unicos en una columna, dira cuantas veces aparece cada uno
 
-
-
-
-
-
-
-
-
-
 #------------ AGRUPAMIENTO DE DATOS ----------------
 #primero es el argumento o agrupamiento por el que se dividira, el segundo son las columnas a las que se les aplicara la funcion 
 #dividir los datos - aplicar una funcion a cada grupo - combinar los resultados para cada grupo
@@ -159,7 +149,12 @@ grouped_stage_count = df.groupby('Stage')['Digimon'].count()
 grouped_stage_sum = df.groupby('Stage')['Lv 50 HP'].sum()
 grouped_stage_mean = df.groupby('Stage')['Lv50 Spd'].mean()
 mean_score = df.groupby('genre')['critic_score'].mean()
-#cambia el índice de fila de los datos a las clave  s por las que estamos agrupando.
+    # df es un DataFrame
+    # Stage es una columna de df(segun los valores de esta)
+    # Digimon es otra columna de df, a la que se le aplicara la funcion count() para cada grupo creado por los valores de Stage
+    # .count() cuenta los valores no nulos dentro de cada grupo
+
+#cambia el índice de fila de los datos a las claves por las que estamos agrupando.
 
 groupby_data = df.groupby(['genre', 'platform'])['eu_sales'].mean()
 print(groupby_data)
