@@ -345,7 +345,7 @@ print('El texto lematizado:', lemmatize(clear_text(review)))
 
 # Otra forma de hacerlo:
 import spacy
-from collections import Counter
+from collections import Counter 
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 text = """For want of a nail the shoe was lost. For want of a shoe the horse was lost. For want of a horse the rider was lost."""
 doc = nlp(text)
