@@ -2667,13 +2667,178 @@ train_model(model, train_data, val_data)
 print("Clases:", train_data.class_indices)
 print("Numero de clases:", train_data.num_classes)
 
-#----------------------------  ----------------------------
+#---------------------------- Arquitectura ResNet (red residual) ----------------------------
+# La principal diferencia entre VGG y otras arquitecturas es que se dejan de lado los filtros grandes (como 9x9 u 11x11, por ejemplo) en la capa convolucional.
+# Quienes crearon VGG demostraron que varias convoluciones de 3x3 pueden imitar kernels de convolución más grandes.
+# Un par de convoluciones con un filtro de 3x3 cubre el mismo número de pixeles que uno de 5x5
+# solo hay 18 parámetros en dos convoluciones de 3x3 ((2·(3·3)), mientras que una de 5x5 contiene 25 (5·5). 
+# En ResNet, todas las convoluciones, a excepción de la primera, tienen filtros que no son mayores que 3x3.
 
-#----------------------------  ----------------------------
+# ¿Qué hace a ResNet diferente de sus predecesoras?
+# Las conexiones especiales que funcionan como atajos para saltar algunas capas.
+# Se les llama conexiones-salto.
 
-#----------------------------  ----------------------------
+# Las conexiones-salto funcionan muy bien porque mantienen el flujo de la señal incluso cuando atraviesa una red muy profunda. Y cuanto más profunda sea la red, más funciones complejas puede aprender.
+# El bloque cuello de botella permite reducir el número de pesos
+# Por ejemplo, si el input del modelo es una matriz tridimensional con 256 canales, entonces, en vez de un par de convoluciones con filtros de 3x3, la operación de convolución se hace con un filtro de 1x1. 
+# Esto reduce cuatro veces el número de canales hasta 64. 
+# A esto le sigue una convolución de 3x3 con el mismo número de canales y después, una convolución de 1x1 devuelve el número hasta 256.
 
-#----------------------------  ----------------------------
+# La convolución "pesada" con el filtro de 3x3 se creó con un tensor cuatro veces más pequeño que la original, lo que redujo el número de parámetros y aceleró los cálculos.
+# ResNet es una red profunda que utiliza conexiones-salto, convoluciones pequeñas y bloques cuello de botella
+
+#---------------------------- ResNet en Keras ----------------------------
+from tensorflow.keras.applications.resnet import ResNet50
+model = ResNet50(input_shape=None, 
+                 classes=1000,
+                 include_top=True,
+                 weights='imagenet')
+
+# input_shape: tamaño de la imagen de input
+#     No es completamente automático. 
+#     Significa que el modelo inferirá la forma de entrada basándose en los primeros datos que reciba.
+
+# classes=1000: el número de neuronas en la última capa totalmente conectada donde sucede la clasificación
+#     El modelo puede clasificar entre 1000 categorías diferentes. 
+
+# weights='imagenet': la inicialización de los pesos.
+#     ImageNet es el nombre de una gran base de datos de imágenes que se usaba al entrenar la red para que clasificara imágenes en 1000 clases.
+#     Escribe weights=None para inicializar los pesos al azar.
+
+# include_top=True: indica que hay dos capas al final de ResNet
+#     (GlobalAveragePooling2D y Dense) 
+#     Si la configuras en False, estas dos capas no estarán presentes.
+
+# - GlobalAveragePooling2D funciona como ventana para todo el tensor. Como AveragePooling2D, devuelve el valor promedio de un grupo de pixeles dentro de un canal.
+# - Dense es la capa totalmente conectada responsable de la clasificación.
+
+from tensorflow.keras.layers import GlobalAveragePooling2D, Dense
+from tensorflow.keras.models import Sequential
+backbone = ResNet50( # red troncal
+    # ResNet50 es la parte de la red que se encarga de extraer características de las imágenes.
+    input_shape=(150, 150, 3), 
+    weights='imagenet', 
+    include_top=False
+)
+
+# ¿Qué hace?
+# Toma ResNet50 pre-entrenada en ImageNet
+# Quita la parte superior (include_top=False)
+# Solo mantiene las capas que extraen características
+
+model = Sequential()
+model.add(backbone) # Paso 1: Red pre-entrenada
+model.add(GlobalAveragePooling2D()) # Paso 2: Aplanar datos
+model.add(Dense(12, activation='softmax'))  # Paso 3: Clasificar
+
+# ¿Por qué cada capa?
+    # backbone: Extrae características complejas (bordes, formas, texturas)
+    # GlobalAveragePooling2D: Convierte los mapas de características en un vector plano
+    # Dense(12): Clasifica en 12 categorías
+
+# tenemos que "congelar" una parte de la red: algunas capas se quedarán con pesos de ImageNet y no entrenarán con descenso de gradiente. 
+# Vamos a entrenar una o dos capas completamente conectadas en la parte superior de la red. De esta manera, se reducirá el número de parámetros de la red, pero se conservará la arquitectura.
+
+backbone = ResNet50(
+    input_shape=(150, 150, 3), weights='imagenet', include_top=False
+)
+
+# congela ResNet50 sin la parte superior
+backbone.trainable = False
+model = Sequential()
+model.add(backbone)
+model.add(GlobalAveragePooling2D())
+model.add(Dense(12, activation='softmax'))
+
+# No congelamos la capa completamente conectada encima de *backbone* para que la red pueda aprender.
+
+# Congelar la red te permite evitar el exceso de entrenamiento e incrementar la tasa de aprendizaje de la red (el descenso de gradiente no necesitará contar derivadas para las capas congeladas).
+
+#---------------------------- ¿Qué problema estamos resolviendo? ----------------------------
+# Queremos clasificar imágenes.
+
+# Pero entrenar una red desde cero:
+# requiere MUCHOS datos
+# tarda mucho
+# puede salir mal
+
+# Transfer Learning (aprendizaje por transferencia)
+# Usamos una red ya entrenada (con millones de imágenes) y la adaptamos a nuestro problema.
+
+#---------------------------- ¿Qué es ResNet50? ----------------------------
+# Es una red neuronal profunda (50 capas) diseñada para extraer características de imágenes.
+# permet d’entraîner efficacement des réseaux très profonds sans perte de performance due au gradient évanescent.
+# ResNet50 repose sur l’apprentissage résiduel, une technique où chaque bloc convolutif intègre une « connexion de saut » (skip connection) reliant directement son entrée à sa sortie.
+# Ces raccourcis stabilisent la rétropropagation du gradient, autorisant des profondeurs bien supérieures à celles des réseaux classiques
+
+# ¿Qué hace internamente?
+# Convierte una imagen así: imagen (pixeles)
+# en algo así: bordes → texturas → formas → objetos
+
+# Es decir:
+#     - Detecta líneas
+#     - Luego patrones
+#     - Luego partes de objetos
+#     - Luego objetos completos
+
+# Cada neurona = una categoría
+
+# include_top=True
+# Incluye la parte final del modelo:
+#     - GlobalAveragePooling2D
+#     - Dense (clasificador)
+# Es decir: ResNet completa (feature extractor + clasificador)
+
+# ¿Qué cambia con include_top=False?
+# Quitamos la parte final (clasificador).
+# Nos quedamos SOLO con: imagen → extracción de características
+
+# Entonces backbone es: Un extractor de características
+
+# Paso 1: model.add(backbone)
+# La imagen entra y sale como:
+# (150,150,3) → mapa de características (tensor grande)
+
+# Paso 2: GlobalAveragePooling2D()
+# Convierte esto:
+#     tensor 3D (alto, ancho, canales)
+# en:
+#     vector 1D
+
+# ¿Cómo?
+# Promedia cada canal.
+
+# Ejemplo:
+# [feature map] → promedio → 1 número por canal
+
+# Paso 3: Dense(12, softmax)
+# Clasifica en 12 categorías:
+# vector → probabilidades (12 clases)
+
+# Congelar la red
+# backbone.trainable = False
+
+# ¿Qué significa?
+# Que los pesos de ResNet:
+# - NO se actualizan
+# - NO se entrenan
+# - NO cambian
+
+# Ventajas:
+# - Evitas overfitting
+# - Necesitas menos datos
+# - Entrenamiento más rápido
+# - Aprovechas conocimiento previo
+
+# ResNet ya sabe:
+# - detectar bordes
+# - detectar formas
+# - detectar texturas
+
+# No necesitas reentrenar eso
+# Solo necesitas: "traducir esas features a tus clases"
+
+# Para reducir el tiempo invertido en el entrenamiento del modelo, podemos hacer uso de modelos previamente entrenados, lo que nos ayudará a entrenar nuestro modelo en menos tiempo.
 
 #----------------------------  ----------------------------
 
