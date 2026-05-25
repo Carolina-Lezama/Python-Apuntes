@@ -11,7 +11,6 @@ c = 10
 #------------DATO DE TIPO FLOTANTE-----------------
 d = 10.5
 
-
 #------------DATO DE TIPO BOOLEANO-----------------
 e = True
 f = False
@@ -144,7 +143,7 @@ print(a*2) #solo impresion, no se guarda la variable
 Lista = [1, 2, 3, 4, 5, [6, 7, 8]]
 a = Lista[4:8] #si los valores no existen, no da error, solo toma hasta el final
 
-#Daria error si porque no se puede comparar list ni str con int
+#Daria error porque no se puede comparar list ni str con int
 min(Lista) #valor minimo
 max(Lista) #valor maximo
 sum(Lista) #suma todos los valores numericos

@@ -1,6 +1,6 @@
 # LeNet5
 
-![alt text](image.png)
+![alt text](../imagenes/image.png)
 
 Convolutions with learnable parameters are an effective way to extract similar features at multiple location with few parameters
 Therefore being able to save parameters and computation was a key advantage
@@ -25,7 +25,7 @@ convolutional neural network use sequence of 3 layers:
 # AlexNet
 
 which was a deeper and much wider version of the LeNet
-![alt text](image-1.png)
+![alt text](../imagenes/image-1.png)
 
 much larger neural network that could be used to learn much more complex objects and object hierarchies
 
@@ -65,7 +65,7 @@ the first Inception architecture.
 deep learning models were becoming extermely useful in categorizing the content of images and video frames.
 Christian thought a lot about ways to reduce the computational burden of deep neural nets while obtaining state-of-art performance
 
-![alt text](image-2.png)
+![alt text](../imagenes/image-2.png)
 
 But the great insight of the inception module was the use of 1×1 convolutional blocks (NiN) to reduce the number of features before the expensive parallel blocks.
 GoogLeNet used a stem without inception modules as initial layers, and an average pooling plus softmax classifier similar to NiN. This classifier is also extremely low number of operations
@@ -105,7 +105,7 @@ A lot of their success lays in the careful design of the neural network architec
 
 feed the output of two successive convolutional layer AND also bypass the input to the next layers
 
-![alt text](image-3.png)
+![alt text](../imagenes/image-3.png)
 
 But here they bypass TWO layers and are applied to large scales. Bypassing after 2 layers is a key intuition, as bypassing a single layer did not give much improvements. By 2 layers can be thought as a small classifier, or a Network-In-Network!
 

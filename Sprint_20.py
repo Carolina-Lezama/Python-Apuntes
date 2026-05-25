@@ -1,16 +1,35 @@
+#---------------------------- ¿Qué es display()? ----------------------------
+# función de Jupyter Notebook que muestra DataFrames con formato HTML
+
+#importar librerias
+from IPython.display import display
+import pandas as pd
+
+# Mostrar el DataFrame completo
+display(df)
+
+# Mostrar las primeras filas
+display(df.head())
+
+# Mostrar información específica
+display(df.info())
+display(df.describe())
+
+# Mostrar múltiples DataFrames
+display(df_train.head())
+display(df_test.head())
+
+# Mostrar estadísticas
+display(df.describe())
+display(df.isnull().sum())
+
+# Mostrar resultados de modelos
+display(pd.DataFrame({
+    'Modelo': ['Random Forest', 'Gradient Boosting'],
+    'AUC-ROC': [0.8479, 0.8530]
+}))
 #----------------------------  ----------------------------
 
-#----------------------------  ----------------------------
-
-#----------------------------  ----------------------------
-
-#----------------------------  ----------------------------
-
-#----------------------------  ----------------------------
-
-#----------------------------  ----------------------------
-
-#----------------------------  ----------------------------
 
 #----------------------------  ----------------------------
 

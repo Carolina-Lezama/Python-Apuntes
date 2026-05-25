@@ -1,6 +1,8 @@
 #------------IMPORTAR PANDAS----------------
 import pandas as pd
 
+
+
 #------------ABRIR ARCHIVOS CSV----------------
 #Se guardan en una variable
 df = pd.read_csv('/datasets/music.csv', sep=',') #sep por defecto es , pero puede cambiar como por | ; etc. es la forma en que estan separados los datos

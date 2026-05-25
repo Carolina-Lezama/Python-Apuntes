@@ -19,7 +19,7 @@ for row in table.find_all('tr'):
 weather_records = pd.DataFrame(content, columns=heading_table)
 print(weather_records)
 
-1.Imprime el campo company_name. Encuentra la cantidad de viajes en taxi para cada compañía de taxis para el 15 y 16 de noviembre de 2017, asigna al campo resultante el nombre trips_amount e imprímelo también. Ordena los resultados por el campo trips_amount en orden descendente.
+# 1.Imprime el campo company_name. Encuentra la cantidad de viajes en taxi para cada compañía de taxis para el 15 y 16 de noviembre de 2017, asigna al campo resultante el nombre trips_amount e imprímelo también. Ordena los resultados por el campo trips_amount en orden descendente.
 select
     cabs.company_name as cabs,
     Count(trips.trip_id) as trips_amount 
@@ -32,8 +32,7 @@ cabs.company_name
 order by
 Count(trips.trip_id) desc;
 
-2. 
-Encuentra la cantidad de viajes para cada empresa de taxis cuyo nombre contenga las palabras "Yellow" o "Blue" del 1 al 7 de noviembre de 2017. Nombra la variable resultante trips_amount. Agrupa los resultados por el campo company_name.
+# 2. Encuentra la cantidad de viajes para cada empresa de taxis cuyo nombre contenga las palabras "Yellow" o "Blue" del 1 al 7 de noviembre de 2017. Nombra la variable resultante trips_amount. Agrupa los resultados por el campo company_name.
 SELECT 
     cabs.company_name,
     COUNT(trips.trip_id) as trips_amount
@@ -93,5 +92,3 @@ where
     and trips.dropoff_location_id = 63
 order by
     trips.trip_id;
-
-
