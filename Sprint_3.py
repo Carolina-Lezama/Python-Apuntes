@@ -1,57 +1,101 @@
 #------------IMPORTAR PANDAS----------------
 import pandas as pd
 
-
-
 #------------ABRIR ARCHIVOS CSV----------------
 #Se guardan en una variable
-df = pd.read_csv('/datasets/music.csv', sep=',') #sep por defecto es , pero puede cambiar como por | ; etc. es la forma en que estan separados los datos
-                                        #sep='\\t' #para tabulaciones
+df = pd.read_csv('/datasets/music.csv', sep=',') 
+# Por defecto: sep=',' 
+# Otros valores: sep='\\t'(tabulaciones) sep='|' sep=';'
+# Forma en que estan separados los datos
 
+#.............Renombrar columnas de un dataframe.............
 column_names = ['user_id', 'genre', 'Artist', 'track', 'total play']
-df = pd.read_csv('/datasets/music.csv', header=None , names=column_names) #por si no hay cabeceras, no se tomen filas como cabecera, no tendremos cabeceras por defecto; va junto con names
+df = pd.read_csv('/datasets/music.csv', header=None , names=column_names) 
+# Por si no hay cabeceras, evitar tomar filas como cabecera.
+# header=None Indica a read_csv que la primera fila no contiene los nombres de las columnas, sino la primera fila de datos reales
 
-df = pd.read_csv('/datasets/music.csv', decimal=',') #volver a los numeros 9,1 a 9.1 para que se tomen como flotantes
+#.............Volver a flotantes.............
+df = pd.read_csv('/datasets/music.csv', decimal=',') 
+# Volver a los numeros 9,1 a 9.1
 
 #------------ABRIR ARCHIVOS EXCEL---------------
-df = pd.read_excel('/datasets/online.xlsx') #solo trae la primera hoja por defecto
+# Solo trae la primera hoja por defecto
+df = pd.read_excel('/datasets/online.xlsx') 
 
-df = pd.read_excel('/datasets/online.xlsx', sheet_name='hoja_2')# cargar una hoja por nommbre
-dfs = pd.read_excel('/datasets/product.xlsx', sheet_name=['product_categories', 'reviews']) #cargar lista de hojas por nombre
+dfs = pd.read_excel('/datasets/product.xlsx', sheet_name=None)
+# Cargar todas las hojas
 
-df = pd.read_excel('/datasets/online.xlsx', sheet_name=1) #cargar hoja por indice
-dfs = pd.read_excel('/datasets/product.xlsx', sheet_name=[0, 2]) #cargar lista de hojas por indice, comienzan en 0
+df = pd.read_excel('/datasets/online.xlsx', sheet_name='hoja_2') 
+# Cargar una hoja por nombre ESPECIFICA
 
-dfs = pd.read_excel('/datasets/product.xlsx', sheet_name=None)# cargar todas las hojas
+df = pd.read_excel('/datasets/online.xlsx', sheet_name=1) 
+# Cargar hoja por indice
 
-#------------GUARDAR RUTAS ---------------
+dfs = pd.read_excel('/datasets/product.xlsx', sheet_name=['product_categories', 'reviews']) 
+# Cargar lista de hojas por nombre
+
+df_dict  = pd.read_excel('/datasets/product.xlsx', sheet_name=[0, 2, 3]) 
+# Cargar lista de hojas por indice, Hojas exactas
+
+df_dict = pd.read_excel('/datasets/product.xlsx', sheet_name=list(range(0, 2)))
+#  Leer un rango continuo
+
+#------------ GUARDAR RUTAS ---------------
 file_path = '/datasets/diabetes.csv'
 df = pd.read_csv(file_path)
 
 #------------FUNCION LOC----------------
 #Existe la notación abreviada y la completa
-#Completa:
-# indice y columna
-df.loc[4, 'genre'] #una celda
-df.loc[:, 'genre'] #una columna
-df.loc[:, ['genre', 'Artist']] #varias columnas no consecutivas
-df.loc[:,'total play': 'genre'] #Múltiples columnas consecutivas (slice)
-df.loc[5, 'total play': 'genre'] #una fila y varias columnas consecutivas
-df.loc[1] #una fila completa por indice
-df.loc[1:] #desde la fila 1 hasta el final slice de filas
-df.loc[:3] #desde el inicio hasta la fila 3 slice de filas
-df.loc[2:5] #desde la fila 2 hasta la fila 5 slice de filas
-df.loc['state 1': 'state 3', 'flower': 'insect'] #slice de indices, slice de columnas
-df.loc['state 1': 'state 3', 'flower'] #slice de indices, de una columna
-df.loc[[0, 1], ['col_name_1', 'col_name_2']] #no funciona como rango, devuelve las filas 0 y 1, y las columnas especificadas
 
-#Abreviada:
-df['genre'] #columna(s)
-df[['genre', 'Artist']]
+#.............Notacion completa.............
+# .loc[indice(s) , columna(s)]
+# El índice (filas) siempre se especifica primero y las columnas son opcionales.
+# No puedes acceder a una columna directamente haciendo df.loc['columna']
+#  Si no pones el segundo argumento, Pandas asume de forma automática que quieres todas las columnas para las filas seleccionadas.
+
+df.loc[4, 'genre'] # Una celda - una columna
+df.loc[:, 'genre'] # Todas las filas - una columna  
+df.loc[:, ['genre', 'Artist']] # Todas las filas - Varias columnas no consecutivas
+df.loc[:,'total play': 'genre'] # Todas las filas - Múltiples columnas consecutivas (slice)
+df.loc[5, 'total play': 'genre'] # Una fila - varias columnas consecutivas
+df.loc[1] # Una fila completa por indice
+
+# Slice de filas
+df.loc[1:] # Desde la fila 1 hasta el final 
+df.loc[:3] # Desde el inicio hasta la fila 3 
+df.loc[2:5] # Desde la fila 2 hasta la fila 5 
+
+# Los indices no necesariamente son numericos
+df.loc['state 1': 'state 3', 'flower': 'insect'] # Slice de indices, slice de columnas
+df.loc['state 1': 'state 3', 'flower'] # Slice de indices, de una columna
+df.loc[[0, 1], ['col_name_1', 'col_name_2']] # Devuelve las filas 0 y 1, y las columnas especificadas (NO rango)
+
+#.............Notacion abreviada.............
+# Busca columnas primero, y las filas son opcionales.
+# Para obtener un slice (corte) de columnas con la notación abreviada, no puedes hacerlo directamente 
+
+df['genre'] # Columna(s)
+df[['genre', 'Artist']] # Columnas no consecutivas
 
 df[1:] #fila(s)
 df[:3] 
 df[2:5]
+
+# Notación abreviada (Usando .columns)
+df[df.columns[2:5]]  # Corta las columnas de la posición 2 a la 4
+
+#.............¿Cual elegir?.............
+# df.loc[...] - Piensa primero en Filas
+# df[...] - Piensa primero en Columnas.
+
+
+
+
+
+
+
+
+
 
 #------------CREAR UN DATAFRAME----------------
 sales_data = [
