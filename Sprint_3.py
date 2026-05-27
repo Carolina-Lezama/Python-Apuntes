@@ -88,63 +88,80 @@ df[df.columns[2:5]]  # Corta las columnas de la posición 2 a la 4
 # df.loc[...] - Piensa primero en Filas
 # df[...] - Piensa primero en Columnas.
 
-
-
-
-
-
-
-
-
-
 #------------CREAR UN DATAFRAME----------------
 sales_data = [
-    ['Laptop' , 'North America', 120 , 120000],
+    ['Laptop' , 'North America', 120 , 120000], # Cada valor es una celda horizontalmente
     ['Smartphone' , 'Europe' , 340 ,170000],
     ['Tablet' , 'Asia' , 210 , 63000],
     ['Headphones' , 'South America' , 150 , 45000],
     ['Smartwatch' , 'Africa' , 95 , 28500]
 ]
-values = ['object', 'capital',"price", "cantite"]
+values = ['object', 'capital', "price", "cantite"]
 sales = pd.DataFrame(data=sales_data, columns=values)
 
 states  = ['Alabama', 'Alaska', 'Arizona', 'Arkansas']
 flowers = ['Camellia', 'Forget-me-not', 'Saguaro cactus blossom', 'Apple blossom']
 insects = ['Monarch butterfly', 'Four-spotted skimmer dragonfly', 'Two-tailed swallowtail', 'European honey bee']
 index   = ['state 1', 'state 2', 'state 3', 'state 4']
-
 df = pd.DataFrame({'state': states, 'flower': flowers, 'insect': insects}, index=index) #crear columnas con listas y asignar indices personalizados
-
-#------------CONTAR, OBTENER MEDIA Y SUMAR----------------
-pop_df =df[df['genre'] == 'Pop'] #aislar datos a cierto tipo, solo tendra las filas que cumplan la condicion
-
-duracion = pop_df[pop_df['user_id'] == '123456']['total play'].sum() #Usas otra condicion para datos aun mas especificos, se toma el campo y se aplica la funcion
-promedio = pop_df['total play'].mean() #media general, en el caso de arriba se toma un usuario como especifico 
-solo_una = df[df['genre'] == 'Pop']['total play'].mean() #o cualquier operacion
-contar = pop_df['total play'] > 30 ['total play'].count() #condicion que se debe cumplir, se cuenta aquellos que cumplen la condicion
+# En forma de diccionario
 
 #------------FUNCIONES EN PANDAS BASE----------------
-print(df.head(2)) #primeras 5 filas por defecto
-print(df.tail(6)) #ultimas 5 filas por defecto
-print(df.sample(5)) #muestra aleatoria de 5 filas
+print(df.head(2)) # Primeras 5 filas por defecto
+print(df.tail(6)) # Ultimas 5 filas por defecto
+print(df.sample(5)) # Muestra aleatoria, pasamos como argumento la cantidad, por defecto 1.
 
-print(df.dtypes) #columnas y tipos de datos
-print(df.shape) #numero de filas
-print(df.columns) #nombres de las columnas
+print(df.dtypes) # Columnas y tipos de datos
+print(df.shape) # Numero de filas y columnas
+print(df.columns) # Nombres de las columnas
 
-todo = df.info() #informacion general del DataFrame
+todo = df.info() # Informacion general del DataFrame
+
+#------------FUNCIONES DE AGREGACION----------------
+# Por defecto y si se aplican a todo el DataFrame completo, devuelven una sola "fila" (una Serie/un escalar)
+# Devuelve una Serie cuando la aplicas a un DataFrame completo (o a varias columnas a la vez), no a una sola columna
+
+# Si las usas con la función groupby(), entonces sí devolverán múltiples filas.
+
+#.............Suma.............
+duracion = df[df['user_id'] == '123456']['total play'].sum() # Devuelve escalar
+duracion = df[df['user_id'] == '123456'][['total play', 'total_pauses']].sum() # Devuelve escalar
+# 1. Filtramos por columna y valor, regresa df filtrado (filas completas que cumplen)
+# 2. Se selecciona una fila especifica del df filtrado y se aplica la funcion
+
+#.............Promedio.............
+sin_filtro = df['total play'].mean() 
+filtrado = df[df['genre'] == 'Pop']['total play'].mean()
+
+#.............Contar.............
+contar = df[df['total play'] > 30]['total play'].count()
+# Contar cuántas filas tienen un total play mayor a 30
+contar = (df['total play'] > 30).sum() # Anterior hecho con sumar booleanos
 
 #------------INDEXACION LOGICA O BOOLEANA----------------
-#Cumplir condiciones, dan booleanos si se cumple o no, devolvera aquellas filas que sean true
+# Aislar datos a cierto tipo, solo tendra las filas que cumplan la condicion
 
-#Notacion mezclada:
-df.loc[df['genre'] == 'Rock'] #completa usando abreviada dentro
+# Notacion mezclada:
+df.loc[df['genre'] == 'Rock'] # Completa usando abreviada dentro
 
-#Notacion abreviada:
-df[df['genre'] == 'Rock'] #abreviada /abreviada
-df[df['total play'] > 90] 
-desktop_data = df[df['device_type'] == 'desktop']
-mobile_data =  df[df['device_type'] == 'mobile']
+# Notacion abreviada:
+resultado = df[df['genre'] == 'Rock'] # Abreviada /abreviada
+resultado = df[df['genre'] == 'Pop'] 
+resultado = df[df['total play'] >= 90] 
+resultado = df[df['total play'] <= 90] 
+resultado = df[df['device_type'] != 'desktop']
+resultado =  df[df['device_type'] == 'mobile']
+
+#.............Mas de 2 condiciones de filtrado.............
+
+
+
+
+
+
+
+
+
 
 ventas_filtradas = df[df['sucursal'] == 'Centro'] #condicional doble, separada
 ventas_filtradas[ventas_filtradas['precio_unitario'] > 25]
