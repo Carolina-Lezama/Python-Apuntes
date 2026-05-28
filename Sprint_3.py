@@ -97,7 +97,17 @@ sales_data = [
     ['Smartwatch' , 'Africa' , 95 , 28500]
 ]
 values = ['object', 'capital', "price", "cantite"]
-sales = pd.DataFrame(data=sales_data, columns=values)
+sales = pd.DataFrame(data=sales_data, columns=values) # Lista de datos, nombres de las columnas
+
+atlas = [
+['France', 'Paris'],
+['Russia', 'Moscow'],
+['China', 'Beijing'],
+['Mexico', 'Mexico City'],
+['Egypt', 'Cairo']
+]
+geography = ['country', 'capital']
+resultado = pd.DataFrame(data = atlas, columns = geography)
 
 states  = ['Alabama', 'Alaska', 'Arizona', 'Arkansas']
 flowers = ['Camellia', 'Forget-me-not', 'Saguaro cactus blossom', 'Apple blossom']
