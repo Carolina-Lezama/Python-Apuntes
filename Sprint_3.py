@@ -116,6 +116,19 @@ index   = ['state 1', 'state 2', 'state 3', 'state 4']
 df = pd.DataFrame({'state': states, 'flower': flowers, 'insect': insects}, index=index) #crear columnas con listas y asignar indices personalizados
 # En forma de diccionario
 
+measurements = [['Sun', 146, 152],
+                ['Moon', 0.36, 0.41],
+                ['Mercury', 82, 217],
+                ['Venus', 38, 261],
+                ['Mars', 56, 401],
+                ['Jupiter', 588, 968],
+                ['Saturn', 1195, 1660],
+                ['Uranus', 2750, 3150],
+                ['Neptune', 4300, 4700],
+                ['Halley\'s comet', 6, 5400]]
+header = ['Celestial bodies ','MIN', 'MAX']
+celestial = pd.DataFrame(data=measurements, columns=header)
+
 #------------FUNCIONES EN PANDAS BASE----------------
 print(df.head(2)) # Primeras 5 filas por defecto
 print(df.tail(6)) # Ultimas 5 filas por defecto
@@ -154,6 +167,9 @@ contar = (df['total play'] > 30).sum() # Anterior hecho con sumar booleanos
 # Notacion mezclada:
 df.loc[df['genre'] == 'Rock'] # Completa usando abreviada dentro
 
+#Notacion completa:
+df.loc[df.loc[:,'genre'] == 'Rock']
+
 # Notacion abreviada:
 resultado = df[df['genre'] == 'Rock'] # Abreviada /abreviada
 resultado = df[df['genre'] == 'Pop'] 
@@ -163,39 +179,136 @@ resultado = df[df['device_type'] != 'desktop']
 resultado =  df[df['device_type'] == 'mobile']
 
 #.............Mas de 2 condiciones de filtrado.............
+# Condicional doble - separada
+ventas_filtradas = df[df['sucursal'] == 'Centro'] 
+ventas_filtradas = ventas_filtradas[ventas_filtradas['precio_unitario'] > 25]
 
-
-
-
-
-
-
-
-
-
-ventas_filtradas = df[df['sucursal'] == 'Centro'] #condicional doble, separada
-ventas_filtradas[ventas_filtradas['precio_unitario'] > 25]
-
+# Condicional doble - unidas
+# True and True, ambas deben cumplirse
 ventas_filtradas = df[(df['sucursal'] == 'Centro') & (df['precio_unitario'] > 25)] #condicional doble, unida
 
-#Notacion completa:
-df.loc[df.loc[:,'genre'] == 'Rock'] #completa /completa
-
-#------------ CAMBIAR NOMBRE DE COLUMNAS----------------
-new_columns ={ #nombre anterior : nuevo nombre
+#------------ FUNCION RENAME----------------
+# Diccionario con: nombre anterior : nuevo nombre
+new_columns ={ 
     '  user_id': 'user_id', 
     'total play': 'total_play',
     'Artist': 'artist'
     }
 df = df.rename(columns = new_columns)
-df.rename(columns=new_columns, inplace=True) #sin reasignar
+df.rename(columns=new_columns, inplace=True)
+# inplace=True, sirve para modificar el DataFrame original directamente, en lugar de crear y devolver una copia nueva con los cambios
+
 df.rename(columns={'  user_id': 'user_id', 'total play': 'total_play', 'Artist': 'artist' }, inplace=True)
 
-columna_nombre = []
-for viejo_nombre in df.columns: #ciclo para cambiar nombres sin hacerlo manual
+#.............Ciclo para renombrar columnas.............
+# 1. Construir una lista
+# 2. Crear ciclo que itera sobre las columnas
+# 3. Normalizacion
+# 4. Renombrar
+
+columna_nombre = [] 
+for viejo_nombre in df.columns: 
     nuevo_nombre = viejo_nombre.strip().lower().replace(" ","_")
     columna_nombre.append(nuevo_nombre)
 df.columns = columna_nombre
+
+new_col_names = []
+for old_name in celestial.columns:
+    # Elimina los espacios al principio y al final
+    name_stripped = old_name.strip()
+    
+    # De mayusculas a minusculas
+    name_lowered = name_stripped.lower()
+    
+    # Reemplazar espacios
+    name_no_spaces = name_lowered.replace(' ', '_')
+    
+    new_col_names.append(name_no_spaces)
+celestial.columns = new_col_names
+
+#------------DESCRIBE---------------
+# Resumen estadístico detallado para cada una de las columnas; por defecto solo numericas
+print(df.describe()) 
+print(df.describe(include='object')) 
+print(df.describe(include='all')) # Todas las columnas
+
+#------------ CONTAR VALORES AUSENTES ----------------
+df.isna().sum() # Si es true es ausente, al final se suman los ausentes.
+
+#------------ LLENAR VALORES AUSENTES ----------------
+# Para TODO el DataFrame
+df.fillna(0, inplace=True)
+
+# Para múltiples columnas
+df[['precio', 'cantidad']] = df[['precio', 'cantidad']].fillna(0)
+
+# Para varias columnas con DIFERENTES valores
+valores_de_relleno = {
+    'edad': 25,                
+    'ciudad': 'Desconocida',  
+    'suscripcion': False     
+}
+df.fillna(valores_de_relleno, inplace=True)
+
+# Para una columna
+colera['imported_cases'] = colera['imported_cases'].fillna(0)
+colera['imported_cases'].fillna(0, inplace=True) 
+df['genre'].fillna(0, inplace = True)
+df['email'] = df['email'].fillna(value='')
+df['col'].fillna('no_info', inplace=True)
+
+# Para varias columnas con ciclo
+columns_to_replace = ['imported_cases']
+for col in columns_to_replace:
+    colera[col].fillna(0, inplace=True)
+
+#------------ ELIMINAR VALORES AUSENTES ----------------
+# El comportamiento por defecto (Borrar fila si hay CUALQUIER nulo)
+df.dropna(inplace=True)
+
+# Buscar nulos solo en columnas específicas (subset)
+# Elimina si falta algun dato dentro de las columnas listadas
+df.dropna(subset=['precio', 'cantidad'], inplace=True)
+df.dropna(subset=['genre','total play'], inplace=True) 
+colera = colera.dropna(subset=['total_cases', 'deaths', 'case_fatality_rate'])
+
+# Borrar columnas enteras en lugar de filas (axis=1)
+df = df.dropna(axis = 'columns') #eliminar la columna si tiene al menos un ausente
+colera = colera.dropna(axis='columns')
+df.dropna(axis=1, inplace=True)
+
+# Borrar filas completas
+df = df.dropna(axis = 'rows') #eliminar la fila si tiene al menos un ausente
+df.dropna(axis=0, inplace=True)
+
+# Borrar solo cuando TODO está vacío (how='all')
+# Solo elimina la fila si TODAS sus columnas tienen NaN
+df.dropna(how='all', inplace=True)
+
+# Salvar la fila si tiene un mínimo de datos válidos (thresh)
+# La fila necesita tener al menos 3 datos válidos (no nulos) para salvarse.
+df.dropna(thresh=3, inplace=True)
+
+# Para columna
+df['my column'] = df['my column'].dropna()
+
+#------------ ELIMINAR FILAS O COLUMNAS QUE YO INDIQUE----------------
+# Eliminar una o mas columna especifica
+colera = colera.drop(labels=['notes'], axis='columns')
+df = df.drop(labels=['notes', 'puede_ser_una_o_varias'], axis='columns') 
+
+colera.drop(labels=['notes'], axis='columns', inplace=True)
+
+df = df.drop(labels=0, axis='columns') #eliminar una columna por indice
+
+
+
+
+
+
+
+
+
 
 #------------ VALORES DUPLICADOS ----------------
 df.duplicated().sum() #devuelve filas duplicadas (booleano), se puede sumar para ver cuantos duplicados hay
@@ -238,7 +351,7 @@ print(grp['critic_score'].mean())
 df_grouped = df.groupby('score_categorized') #este por si solo no es visible, debe tener un [] para que devuelva datos
 
 df_sum = df_grouped['na_sales'].sum()
-
+e
 #------------ ORDENAR DATOS ----------------
 df.sort_values(by='Stage',ascending=True) #por valor numerico o string, ordena toda la tabla por cierta columna
 df_year_of_release = df['year_of_release'].value_counts().sort_index() #aplicado a indices
@@ -279,32 +392,7 @@ replace_wrong_values(df, 'name', duplicated_names, name)
 #------------ FILTRAR CON NaN----------------
 df[~df['source'].isna()] #filtra los que no son NaN, el ~ es un NOT; muestra los que son valores presentes
 
-#------------DESCRIBE---------------
-#resumen estadístico detallado para cada una de las columnas; por defecto solo numericas
-print(df.describe()) 
-print(df.describe(include='object')) #count igual a valores no nulos, unique valores unicos, top valor mas frecuente, freq frecuencia del valor mas frecuente
-print(df.describe(include='all')) #todas las columnas; nos devolverá valores NaN para aquellas estadísticas que no sean aplicables al tipo de datos de la columna
 
-#------------ BUSCAR VALORES AUSENTES ----------------
-df.isna().sum() #si es true es ausente, al final se suman los ausentes.
-
-#------------ LLENAR VALORES AUSENTES ----------------
-df['genre'].fillna(0, inplace = True) #rellena los ausentes con 0
-df['email'] = df['email'].fillna(value='') #value esepcidifca con que valor quieres reemplazar los valores ausentes
-df['col'].fillna('no_info', inplace=True)
-
-#------------ ELIMINAR VALORES AUSENTES ----------------
-df['my column'] = df['my column'].dropna() #elimina ausentes de una columna especifica
-
-df.dropna(subset=['genre','total play'], inplace=True) #elimina filas con minimo un ausente en la lista de columnas
-
-df = df.dropna(axis = 'columns') #eliminar la columna si tiene al menos un ausente
-df = df.dropna(axis = 'rows') #eliminar la fila si tiene al menos un ausente
-
-#------------ ELIMINAR FILAS O COLUMNAS QUE YO INDIQUE----------------
-df = df.drop(labels=['notes', 'puede_ser_una_o_varias'], axis='columns') #eliminar una columna especifica
-df = df.drop(labels=0, axis='columns') #eliminar una columna por indice
-#ambos aceptan inplace = True
 
 #------------OBJETO SERIES Y DETERMINAR EL INDEX---------------
 oceans = pd.Series(['Pacific', 'Atlantic', 'Indian', 'Southern', 'Arctic'], index=['A', 'B', 'C', 'D', 'E']) #Forma 1, puedo usar int o string
