@@ -301,46 +301,63 @@ colera.drop(labels=['notes'], axis='columns', inplace=True)
 
 df = df.drop(labels=0, axis='columns') #eliminar una columna por indice
 
-
-
-
-
-
-
-
-
-
 #------------ VALORES DUPLICADOS ----------------
-df.duplicated().sum() #devuelve filas duplicadas (booleano), se puede sumar para ver cuantos duplicados hay
-df = df.drop_duplicates().reset_index(drop=True) #elimina duplicados, resetear los indices, borrar anterior lista de indices
-df.drop_duplicates(inplace=True) #elimina duplicados sin reasignar
+df.duplicated().sum() 
+# Devuelve boolean si hay duplicados, se suman
 
-df[df.duplicated(keep=False)] #devuelve la posiciones de los duplicados incluto la primera aparicion
+df[df.duplicated(keep=False)] # Devuelve la posiciones de los duplicados incluida la primera aparicion
+
+#------------ ELIMINAR FILAS COMPLETAMENTE DUPLICADAS ----------------
+df = df.drop_duplicates().reset_index(drop=True) 
+# Elimina duplicados, resetear los indices, borrar anterior lista de indices
+df.drop_duplicates(inplace=True) 
 
 df.drop_duplicates(subset='col_1') #Busca y elimina duplicados solo considerando la columna
 df.drop_duplicates(subset=['col1', 'col2']) #Busca y elimina duplicados basandose en varias columnas
 
 #------------UNIQUE Y NUNIQUE---------------
+# Solo una columna a la vez
 df['name'].unique() #valores unicos en una columna, sirve para verificar duplicados por mala escritura, etc. devuelve array
 df['name'].nunique() #da el numero de valores unicos, devuelve entero
 
-#------------ CONTAR VALORES----------------
-df['col_1'].value_counts(dropna=False) #Incluira los valores None o NaN si es False
-df['col_1'].value_counts(ascending=True) #contar valores unicos en una columna, dira cuantas veces aparece cada uno
+#.............Automatización con funciones personalizadas.............
+duplicates = ['Roger Federerr', 'Roger Fedrer'] # Una lista de nombres mal escritos
+name = 'Roger Federer' # El nombre correcto
+
+# 1. Toma argumentos
+# 2. Bucle que itera en los valores errones
+# 3. Reemplaza valores_de_relleno
+# 3. Regresa el dataframe
+
+def replace_wrong_values(df, column, wrong_values, correct_value):
+    for wrong_value in wrong_values:
+        df[column] = df[column].replace(wrong_values, correct_value)
+    return df
+
+tennis = replace_wrong_values(df, 'name', duplicates, name) # Llamar a la función
 
 #------------ AGRUPAMIENTO DE DATOS ----------------
-#primero es el argumento o agrupamiento por el que se dividira, el segundo son las columnas a las que se les aplicara la funcion 
-#dividir los datos - aplicar una funcion a cada grupo - combinar los resultados para cada grupo
+# Agrupar por columna y aplicar una funcion de agregacion a cada grupo formado
+print(df.groupby(by='discovered').count())
+print(df.groupby('discovered').count())
+
+# 1. Argumento de agrupamiento por el que se dividira
+# 2. Columna a las que se le aplicara la funcion 
+
+# [] Actua como un filtro, en qué columna específica quieres aplicar la operación matemática
+exo_number = df.groupby('discovered')['radius'].count()
+exo_radius_sum = df.groupby('discovered')['radius'].sum()
 grouped_stage_count = df.groupby('Stage')['Digimon'].count()
 grouped_stage_sum = df.groupby('Stage')['Lv 50 HP'].sum()
 grouped_stage_mean = df.groupby('Stage')['Lv50 Spd'].mean()
+
 mean_score = df.groupby('genre')['critic_score'].mean()
     # df es un DataFrame
-    # Stage es una columna de df(segun los valores de esta)
+    # Stage es una columna de df, se agrupara por esta
     # Digimon es otra columna de df, a la que se le aplicara la funcion count() para cada grupo creado por los valores de Stage
     # .count() cuenta los valores no nulos dentro de cada grupo
 
-#cambia el índice de fila de los datos a las claves por las que estamos agrupando.
+# Cambia el índice de fila de los datos a las claves por las que estamos agrupando.
 
 groupby_data = df.groupby(['genre', 'platform'])['eu_sales'].mean()
 print(groupby_data)
@@ -348,10 +365,6 @@ print(groupby_data)
 grp = df.groupby(['platform', 'genre']) #agrupar por varios campos 
 print(grp['critic_score'].mean())
 
-df_grouped = df.groupby('score_categorized') #este por si solo no es visible, debe tener un [] para que devuelva datos
-
-df_sum = df_grouped['na_sales'].sum()
-e
 #------------ ORDENAR DATOS ----------------
 df.sort_values(by='Stage',ascending=True) #por valor numerico o string, ordena toda la tabla por cierta columna
 df_year_of_release = df['year_of_release'].value_counts().sort_index() #aplicado a indices
@@ -380,14 +393,10 @@ df['city'] = df['city'].str.strip().str.title() #title hace mayuscula la primera
 df['genre'] = df['genre'].replace('ranchera','rancheras') #remplaza un valor por otro
 df['source'] = df['source'].replace('','email')
 
-#------------ FUNCION PARA REMPLAZAR ERRORES EN DATOS ----------------
-def replace_wrong_values(df, column, wrong_values, correct_value):
-    for wrong_value in wrong_values:
-        df[column] = df[column].replace(wrong_values, correct_value)
-    return df
-duplicated_names = ['Rafael Nadad', 'Rafa Nadal']
-name="Rafael Nadal"
-replace_wrong_values(df, 'name', duplicated_names, name)
+#------------ CONTAR VALORES----------------
+df['col_1'].value_counts(dropna=False) #Incluira los valores None o NaN si es False
+df['col_1'].value_counts(ascending=True) #contar valores unicos en una columna, dira cuantas veces aparece cada uno
+
 
 #------------ FILTRAR CON NaN----------------
 df[~df['source'].isna()] #filtra los que no son NaN, el ~ es un NOT; muestra los que son valores presentes
