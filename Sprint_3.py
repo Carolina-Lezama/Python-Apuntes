@@ -44,6 +44,9 @@ df_dict = pd.read_excel('/datasets/product.xlsx', sheet_name=list(range(0, 2)))
 file_path = '/datasets/diabetes.csv'
 df = pd.read_csv(file_path)
 
+#------------ RELLENAR VALORES CATEGORICOS AUSENTES----------------
+df = pd.read_csv('/datasets/music_log_chpt_11.csv', keep_default_na=False) #vuelve cadenas vacias en vez de NaN
+
 #------------FUNCION LOC----------------
 #Existe la notación abreviada y la completa
 
@@ -199,6 +202,8 @@ df.rename(columns=new_columns, inplace=True)
 # inplace=True, sirve para modificar el DataFrame original directamente, en lugar de crear y devolver una copia nueva con los cambios
 
 df.rename(columns={'  user_id': 'user_id', 'total play': 'total_play', 'Artist': 'artist' }, inplace=True)
+
+df = df.rename(columns={'userid': 'user_id'})
 
 #.............Ciclo para renombrar columnas.............
 # 1. Construir una lista
@@ -365,6 +370,61 @@ print(groupby_data)
 grp = df.groupby(['platform', 'genre']) #agrupar por varios campos 
 print(grp['critic_score'].mean())
 
+#------------ METODOS PARA STRINGS DE FILAS----------------
+# Minuculas
+# Misma columnas 
+df['col_1'] = df['col_1'].str.lower() # Convierte a minusculas los strings de una columna
+# Diferente columna
+df['item_lowercase'] = df['item'].str.lower() 
+
+# Reemplazar
+df['item_modified'] = df['item'].str.replace('GB', 'gb') 
+df['genre'] = df['genre'].replace('ranchera','rancheras') 
+df['source'] = df['source'].replace('','email')
+
+# Primera Letra De Cada Palabra
+df['city'] = df['city'].str.strip().str.title() 
+
+#------------ FILTRAR CON NaN----------------
+# Filtrar y quedarte únicamente con las filas donde la columna NO está vacía (elimina los valores nulos o NaN)
+df[~df['source'].isna()] 
+
+#------------ CONTAR VALORES----------------
+# Toma una columna y cuenta cuántas veces aparece cada valor único, ordenando los resultados de mayor a menor frecuencia.
+
+# Obtener porcentajes - cada conteo entre el total de filas
+df['order_status'].value_counts(normalize=True)
+# delivered: 0.97 (97%)
+# canceled:  0.01 (1%)
+
+# Hacer visibles los datos faltantes
+# Este parámetro obligará a la función a contar los NaN como si fueran una categoría más.
+df['col_1'].value_counts(dropna=False) 
+
+# Agrupar números continuos en rangos
+# Agrupará todas las en grandes bloques o rangos, mostrándo cuantas categorias caen dentro de cada rango.
+df['col_1'].value_counts(bins=5)
+
+# Orden de mostrar los resultados
+df['col_1'].value_counts(ascending=True) 
+
+#------------OBJETO SERIES Y DETERMINAR EL INDEX---------------
+
+
+
+
+
+
+oceans = pd.Series(['Pacific', 'Atlantic', 'Indian', 'Southern', 'Arctic'], index=['A', 'B', 'C', 'D', 'E']) #Forma 1, puedo usar int o string
+oceans.index = [1, 2, 3, 4, 5] #Forma 2
+
+
+
+
+
+
+
+
 #------------ ORDENAR DATOS ----------------
 df.sort_values(by='Stage',ascending=True) #por valor numerico o string, ordena toda la tabla por cierta columna
 df_year_of_release = df['year_of_release'].value_counts().sort_index() #aplicado a indices
@@ -377,35 +437,13 @@ exo_small_14 = df[df['radius'] < 1] #doble filtrado y finalmente ordenamiento
 exo_small_14 = exo_small_14[exo_small_14['discovered'] == 2014]
 exo_small_14 = exo_small_14.sort_values(by='radius', ascending=False) #se devuelve un objeto
 
-#------------ RELLENAR VALORES CATEGORICOS AUSENTES----------------
-df = pd.read_csv('/datasets/music_log_chpt_11.csv', keep_default_na=False) #vuelve cadenas vacias en vez de NaN
-
-#------------ METODOS A STRINGS DE FILAS----------------
-df['col_1'] = df['col_1'].str.lower() #convierte a minusculas los strings de una columna, con reasignacion
-df['item_lowercase'] = df['item'].str.lower() #asignacion a nueva columna
-
-df['item_modified'] = df['item'].str.replace('GB', 'gb') #sin reasignacion a la original
-
-df = df.rename(columns={'userid': 'user_id'})
-
-df['city'] = df['city'].str.strip().str.title() #title hace mayuscula la primera letra de cada palabra
-
-df['genre'] = df['genre'].replace('ranchera','rancheras') #remplaza un valor por otro
-df['source'] = df['source'].replace('','email')
-
-#------------ CONTAR VALORES----------------
-df['col_1'].value_counts(dropna=False) #Incluira los valores None o NaN si es False
-df['col_1'].value_counts(ascending=True) #contar valores unicos en una columna, dira cuantas veces aparece cada uno
-
-
-#------------ FILTRAR CON NaN----------------
-df[~df['source'].isna()] #filtra los que no son NaN, el ~ es un NOT; muestra los que son valores presentes
 
 
 
-#------------OBJETO SERIES Y DETERMINAR EL INDEX---------------
-oceans = pd.Series(['Pacific', 'Atlantic', 'Indian', 'Southern', 'Arctic'], index=['A', 'B', 'C', 'D', 'E']) #Forma 1, puedo usar int o string
-oceans.index = [1, 2, 3, 4, 5] #Forma 2
+
+
+
+
 
 #------------INDEXACION ILOC[]----------------
 #usa enteros, se puede usar indexacion negativa
