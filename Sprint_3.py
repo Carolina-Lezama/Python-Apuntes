@@ -408,53 +408,94 @@ df['col_1'].value_counts(bins=5)
 # Orden de mostrar los resultados
 df['col_1'].value_counts(ascending=True) 
 
+# Contar valores, ordenados por indice(años) y no por el valor contado
+# Por defecto, value_counts() ordena los resultados de mayor a menor frecuencia
+df_year_of_release = df['year_of_release'].value_counts().sort_index() 
+
 #------------OBJETO SERIES Y DETERMINAR EL INDEX---------------
+# Pandas enumerará las filas automáticamente desde el 0 en adelante
 
-
-
-
-
-
-oceans = pd.Series(['Pacific', 'Atlantic', 'Indian', 'Southern', 'Arctic'], index=['A', 'B', 'C', 'D', 'E']) #Forma 1, puedo usar int o string
-oceans.index = [1, 2, 3, 4, 5] #Forma 2
-
-
-
-
-
-
-
+# Usar string como index
+oceans = pd.Series(
+    ['Pacific', 'Atlantic', 'Indian', 'Southern', 'Arctic'],
+    index=['A', 'B', 'C', 'D', 'E']
+                ) 
+# Renombrar los index a int
+oceans.index = [1, 2, 3, 4, 5] 
 
 #------------ ORDENAR DATOS ----------------
-df.sort_values(by='Stage',ascending=True) #por valor numerico o string, ordena toda la tabla por cierta columna
-df_year_of_release = df['year_of_release'].value_counts().sort_index() #aplicado a indices
+# .sort_values() es el equivalente directo y exacto de ORDER BY en SQL.
+# Por valor numerico o string
 
-df['radius'].sort_values() #solo ordena esa columna
+# Ordena toda la tabla dandole una(s) columna(s) por la cual ordenar
+df.sort_values(by='Stage', ascending=True, inplace=True) # ASC por defecto
+df.sort_values(by=['categoria', 'precio'], ascending=[True, False])
 
-metal_ordenado = df[df['genre'] == 'metal'].sort_values(by='total_play', ascending=False) #filtrado y ordenado segun otro parametro
+# Ordenar una sola columna
+df['radius'].sort_values(inplace=True) 
 
-exo_small_14 = df[df['radius'] < 1] #doble filtrado y finalmente ordenamiento
+#.............Ordenar el index.............
+# ordena usando las etiquetas de las filas (el índice)
+
+# Ordenado por años
+df_year_of_release = df['year_of_release'].value_counts().sort_index() 
+# Ordern por años invertido (De más reciente a más antiguo)
+df_year_of_release = df['year_of_release'].value_counts().sort_index(ascending=False)
+
+# Ordenado por pais alfabeticamente
+ventas_por_pais = df['pais'].value_counts().sort_index()
+
+# Sin contar valores, solo acomodar index 
+# Acomoda todas las filas del DataFrame basándose en su número de índice original
+df.sort_index(inplace=True)
+
+# Filtrado y ordenamiento
+metal_ordenado = df[df['genre'] == 'metal'].sort_values(by='total_play', ascending=False) 
+
+# Doble filtrado y ordenamiento
+exo_small_14 = df[df['radius'] < 1] 
 exo_small_14 = exo_small_14[exo_small_14['discovered'] == 2014]
-exo_small_14 = exo_small_14.sort_values(by='radius', ascending=False) #se devuelve un objeto
-
-
-
-
-
-
-
-
+exo_small_14 = exo_small_14.sort_values(by='radius', ascending=False)
 
 #------------INDEXACION ILOC[]----------------
-#usa enteros, se puede usar indexacion negativa
-df.iloc[3, 2] #4ª fila y la 3ª columna
+# .loc busca por nombres o etiquetas explícitas
+# .iloc busca por posición numérica entera (la coordenada matemática exacta, empezando desde cero)
+
+# Sintaxis: df.iloc[posicion_fila, posicion_columna]
+# Se puede usar indexacion negativa
+
+# Fila - Columa
+df.iloc[4, 1]
+df.iloc[3, 2]
+
+# Slice de filas
+df.iloc[0:3]
+
+# Slice de columna
 df.iloc[[0, 2], 1:]
 df[df['publisher'] == 'other'].iloc[:,1:5]
+
 #------------CAMBIAR INDICES CON SET_INDEX() PARA DATAFRAME----------------
-df = df.set_index('state') #toma una columna existente de un DataFrame y reemplaza el índice con los valores de esa columna, esa columna deja de exisitir en otros lados
-df.index.name = None #borrar el nombre de la columna, no tendremos titulo en los index
+# Toma una columna existente del df 
+# Reemplaza los con los valores de esa columna
+# #sa columna deja de exisitir en otros lados
+
+df = df.set_index('state') 
+df.index.name = None 
+# Borrar el nombre de la columna, no tendremos titulo en los index.
 
 #------------FILTRADO CON EL METODO query()----------------
+
+
+
+
+
+
+
+
+
+
+
 #requiere un string(representa la consulta)
 df.query("publisher == 'Nintendo'")[['name', 'publisher']].head()
 df.query("~(platform in @handhelds)")[['name', 'platform']]#@ dentro se utiliza para hacer referencia a una variable externa
