@@ -485,25 +485,56 @@ df.index.name = None
 # Borrar el nombre de la columna, no tendremos titulo en los index.
 
 #------------FILTRADO CON EL METODO query()----------------
+# Requiere un string (representa la consulta)
+# Los corchetes dobles al final actúan como un filtro de selección de columnas.
 
+# Filtros simples (Números y Textos)
+# MODO TRADICIONAL:
+df_filtrado = pedidos[pedidos['precio'] > 150.00]
 
+# MODO QUERY:
+df_filtrado = pedidos.query("precio > 150.00")
 
+pedidos_belleza = pedidos.query("categoria == 'belleza_salud'")
 
+df.query("publisher == 'Nintendo'")['name'].head()
 
-
-
-
-
-
-
-#requiere un string(representa la consulta)
-df.query("publisher == 'Nintendo'")[['name', 'publisher']].head()
-df.query("~(platform in @handhelds)")[['name', 'platform']]#@ dentro se utiliza para hacer referencia a una variable externa
 df.query("jp_sales > 1")[['name', 'jp_sales']]
+
+cols = ['name', 'publisher', 'developer']
+df_filtered = df.query("publisher == developer")[cols]
+
 df.query("(platform not in @handhelds)")[['name', 'platform']]
+
 df.query("genre not in @s_genres")[oceans]
-df.query('year_of_release >= 2006 and year_of_release <= 2008')
+
 df.query('year_of_release in [2006, 2007, 2008]')
+
+
+
+# Múltiples condiciones (AND / OR)
+# MODO TRADICIONAL:
+alto_valor = pedidos[(pedidos['precio'] > 100) & (pedidos['estado_cliente'] == 'SP')]
+
+# MODO QUERY:
+alto_valor = pedidos.query("precio > 100 and estado_cliente == 'SP'")
+
+df.query('year_of_release >= 2006 and year_of_release <= 2008')
+
+df.query("platform == 'Wii' and genre != 'Sports'").head()
+
+
+
+
+
+
+
+# Variables externas (El símbolo @)
+umbral_precio_optimo = 250.50
+ventas_premium = pedidos.query("precio >= @umbral_precio_optimo") # Inyectar la variable dentro del query
+
+handhelds = ['PC', 'Phone', 'TV']
+df.query("~(platform in @handhelds)")[['name', 'platform']]
 
 our_list = [2, 5, 10]
 df = pd.DataFrame(
@@ -513,24 +544,38 @@ df = pd.DataFrame(
         'c': ['X', 'Y', 'Y', 'Y', 'Z'],
     }
 )
-print(df.query("a in @our_list")) #devolvió todas las filas de df donde los valores de 'a' están presentes en our_list
+print(df.query("a in @our_list")) # Todas las filas de df donde los valores de 'a' están presentes en our_list
+
+our_df = pd.DataFrame(index=[10, 11, 12]) # Usando indices de otro datadrame como filtro
+print(df.query("a in @our_df.index"))
+
+our_series = pd.Series([10, 11, 12])
+print(df.query("a in @our_series")) # .index para probar con indices del series
+
+
+
+
+
+
+
+
+# ¿Qué pasa si mis columnas tienen espacios?
+# Envolver el nombre de esa columna en backticks (comillas invertidas `):
+pedidos.query("`valor del flete` < 20.00")
+
+
+
+
+
+
+
+
 
 our_dict = {0: 10, 3: 11, 12: 12}
 print(df.query("a in @our_dict.values()")) #funciona igual con diccionarios
 
-our_series = pd.Series([10, 11, 12])
-print(df.query("a in @our_series"))#funciona igual con series; .index para comprobar si los valores están presentes entre los valores del índice
-
-our_df = pd.DataFrame(index=[10, 11, 12]) #usando otro datadrame como filtro, usando indices
-print(df.query("a in @our_df.index"))
-
 our_df = pd.DataFrame({'a1': [10, 11, 12]})
 print(df.query("a in @our_df.a1"))#usando el nombre de una columna, se usa . en lugar de['']
-
-cols = ['name', 'publisher', 'developer']
-df_filtered = df.query("publisher == developer")[cols]
-
-df.query("platform == 'Wii' and genre != 'Sports'").head()
 
 q_string = "na_sales >= 1 or eu_sales >= 1 or jp_sales >= 1"
 print(df.query(q_string).head())
@@ -543,6 +588,9 @@ developers = ['SquareSoft', 'Enix Corporation', 'Square Enix']
 cols = ['name', 'developer', 'na_sales', 'eu_sales', 'jp_sales']
 q_string = "jp_sales > (na_sales + eu_sales) and jp_sales > 0 and na_sales > 0 and eu_sales > 0 and developer in @developers"
 df_filtered = df.query(q_string)[cols]
+
+
+
 
 #------------FILTRADO CON EL METODO isin()----------------
 #comprueba si los valores de una columna coinciden con alguno de los valores de otra matriz, conveniente cuando tenemos muchas condiciones que comprobar
