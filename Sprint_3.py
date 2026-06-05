@@ -511,7 +511,6 @@ df.query("genre not in @s_genres")[oceans]
 df.query('year_of_release in [2006, 2007, 2008]')
 
 
-
 # Múltiples condiciones (AND / OR)
 # MODO TRADICIONAL:
 alto_valor = pedidos[(pedidos['precio'] > 100) & (pedidos['estado_cliente'] == 'SP')]
@@ -523,10 +522,12 @@ df.query('year_of_release >= 2006 and year_of_release <= 2008')
 
 df.query("platform == 'Wii' and genre != 'Sports'").head()
 
+q_string = "na_sales >= 1 or eu_sales >= 1 or jp_sales >= 1"
+print(df.query(q_string).head())
 
-
-
-
+cols = ['name', 'developer', 'na_sales', 'eu_sales', 'jp_sales']
+q_string = "na_sales > 0 and eu_sales > 0 and jp_sales > 0"
+df_filtered = df.query(q_string)[cols]
 
 
 # Variables externas (El símbolo @)
@@ -552,37 +553,12 @@ print(df.query("a in @our_df.index"))
 our_series = pd.Series([10, 11, 12])
 print(df.query("a in @our_series")) # .index para probar con indices del series
 
-
-
-
-
-
-
-
-# ¿Qué pasa si mis columnas tienen espacios?
-# Envolver el nombre de esa columna en backticks (comillas invertidas `):
-pedidos.query("`valor del flete` < 20.00")
-
-
-
-
-
-
-
-
-
 our_dict = {0: 10, 3: 11, 12: 12}
-print(df.query("a in @our_dict.values()")) #funciona igual con diccionarios
+print(df.query("a in @our_dict.values()")) 
 
+# Usando el nombre de una columna, se usa . en lugar de['']
 our_df = pd.DataFrame({'a1': [10, 11, 12]})
-print(df.query("a in @our_df.a1"))#usando el nombre de una columna, se usa . en lugar de['']
-
-q_string = "na_sales >= 1 or eu_sales >= 1 or jp_sales >= 1"
-print(df.query(q_string).head())
-
-cols = ['name', 'developer', 'na_sales', 'eu_sales', 'jp_sales']
-q_string = "na_sales > 0 and eu_sales > 0 and jp_sales > 0"
-df_filtered = df.query(q_string)[cols]
+print(df.query("a in @our_df.a1"))
 
 developers = ['SquareSoft', 'Enix Corporation', 'Square Enix']
 cols = ['name', 'developer', 'na_sales', 'eu_sales', 'jp_sales']
@@ -590,17 +566,37 @@ q_string = "jp_sales > (na_sales + eu_sales) and jp_sales > 0 and na_sales > 0 a
 df_filtered = df.query(q_string)[cols]
 
 
-
+# ¿Qué pasa si mis columnas tienen espacios?
+# Envolver el nombre de esa columna en backticks (comillas invertidas `):
+pedidos.query("`valor del flete` < 20.00")
 
 #------------FILTRADO CON EL METODO isin()----------------
-#comprueba si los valores de una columna coinciden con alguno de los valores de otra matriz, conveniente cuando tenemos muchas condiciones que comprobar
-#se puede usar ~    
-handhelds = ['3DS', 'DS', 'GB', 'GBA', 'PSP'] 
-df[df['platform'].isin(handhelds)][['name', 'platform']] #comprueba si los valores de la columna 'platform' son iguales a algún valor de la lista handhelds
+
+# Comprueba si valores en una lista coinciden con alguno de los valores en una columna del df
+# Adecuado cuando tenemos muchas condiciones que comprobar
+# Se puede usar ~  (Inversion de valor booleano)
+# .isin() devuelve una mascara booleana
+
+handhelds = ['3DS', 'DS', 'GB', 'GBA', 'PSP'] # Lista de referencia
+df[df['platform'].isin(handhelds)][['name', 'platform']] 
+# Comprueba si los valores de la columna 'platform' son iguales a algún valor de la lista handhelds
+
+s_genres = ['M']
 df_filtered = df[~df['genre'].isin(s_genres)][cols]
-ventas_filtradas = ventas[ventas['producto'].isin(productos_más_vendidos)]
-((df['critic_score'] >= 90) | (df['user_score'] >= 9)) & (df['genre'].isin(['Role-Playing', 'Strategy', 'Puzzle']))
-df[df['year_of_release'].isin([2006, 2007, 2008])]
+
+productos_más_vendidos = ['toalla', 'perfume', 'manzana']
+ventas_filtradas = df[df['producto'].isin(productos_más_vendidos)]
+
+
+
+
+
+
+
+
+
+resultado = df[((df['critic_score'] >= 90) | (df['user_score'] >= 9)) & (df['genre'].isin(['Role-Playing', 'Strategy', 'Puzzle']))
+df[df['year_of_release'].isin([2006, 2007, 2008])]]
 
 #------------ FILTRANDO POR CONDICIONALES ----------------
 df_filtered = df[(df['year_of_release'] >= 1980) & (df['year_of_release'] < 1990)]
