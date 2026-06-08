@@ -587,25 +587,116 @@ df_filtered = df[~df['genre'].isin(s_genres)][cols]
 productos_más_vendidos = ['toalla', 'perfume', 'manzana']
 ventas_filtradas = df[df['producto'].isin(productos_más_vendidos)]
 
+df[df['year_of_release'].isin([2006, 2007, 2008])]
+    # No exclusivo de strings
 
+large_cities = df[df['population'] > 100000]['city_id']
+clients_in_large_cities = df[df['city_id'].isin(large_cities)]
 
+#..............Filtros complejos................
+# Combinando múltiples condiciones lógicas al mismo tiempo
 
+# 1. El Súper Filtro (La combinación de AND y OR)
+((df['critic_score'] >= 90) | (df['user_score'] >= 9)) & (df['genre'].isin(['Role-Playing', 'Strategy', 'Puzzle']))
+    # Este código es solo la "máscara booleana"
 
+listaVIP = ['Role-Playing', 'Strategy', 'Puzzle']
+resultado = df[((df['critic_score'] >= 90) | (df['user_score'] >= 9)) & (df['genre'].isin(listaVIP))]
+    # En Pandas, cuando usas & y |, los paréntesis son obligatorios.
 
+#.............Atajo para fechas................
+# Cuando tienes años seguidos puedes reemplazar el .isin() por .between()
 
+# De:
+df[df['year_of_release'].isin([2006, 2007, 2008])]
+# O:
+df_filtered = df[(df['year_of_release'] >= 2006) & (df['year_of_release'] <= 2008)]
+# A:
+df[df['year_of_release'].between(2006, 2008)]
 
-
-resultado = df[((df['critic_score'] >= 90) | (df['user_score'] >= 9)) & (df['genre'].isin(['Role-Playing', 'Strategy', 'Puzzle']))
-df[df['year_of_release'].isin([2006, 2007, 2008])]]
-
-#------------ FILTRANDO POR CONDICIONALES ----------------
+# De:
 df_filtered = df[(df['year_of_release'] >= 1980) & (df['year_of_release'] < 1990)]
-df[(df['year_of_release'] >= 2006) & (df['year_of_release'] <= 2008)]
+# A:
+df_filtered = df[df['year_of_release'].between(1980, 1990, inclusive='left')]
+    # El tercer parametro marca el límite de los bordes
+    # 'both' (Por defecto): Incluye ambos 
+    # 'neither': Excluye ambos 
+    # 'left': Incluye solo el la izquierda
+    # 'right': Incluye solo el de la derecha
 
-large_cities = cities[cities['population'] > 100000]['city_id']
-clients_in_large_cities = clients[clients['city_id'].isin(large_cities)]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 df.loc[df['name'] == 'Tetris', 'year_released'] = 1984
+¡Pienso que es el código perfecto! De hecho, es literalmente la forma más profesional, segura y recomendada por la industria para actualizar un dato específico dentro de un DataFrame.
+
+Si estuvieras en una revisión de código (Code Review), cualquier desarrollador Senior te aprobaría esta línea de inmediato.
+
+Aquí te explico exactamente por qué este filtro es tan bueno y qué problema gigante te está evitando:
+
+La anatomía de la corrección perfecta
+Como vimos antes, .loc busca usando las etiquetas. Pero aquí lo estás usando como un sistema de coordenadas espaciales para apuntar con láser a una celda (o celdas) en específico y sobrescribir su valor.
+
+Se divide en tres partes exactas:
+
+La Coordenada Y (Las Filas): df['name'] == 'Tetris'
+En lugar de pasarle un número o un nombre de fila estático, le pasaste una pregunta lógica. Pandas filtra la tabla y localiza únicamente la fila (o filas) donde el juego es Tetris.
+
+La Coordenada X (La Columna): 'year_released'
+Le dices exactamente en qué columna de esa fila quieres pararte.
+
+La Asignación: = 1984
+El signo de igual reemplaza el valor viejo (quizás era un nulo NaN o un año equivocado) e inyecta el 1984 directamente en la memoria de la tabla original.
+
+Lo que evitaste: El terror del SettingWithCopyWarning
+Muchos analistas principiantes intentan hacer esta misma actualización usando la sintaxis de filtros que vimos hace rato, escribiendo algo así (que es incorrecto):
+
+Python
+# EL MODO INCORRECTO (Chained Indexing)
+df[df['name'] == 'Tetris']['year_released'] = 1984
+Si ejecutas eso, Python se vuelve loco y te lanza un bloque rojo de error gigante llamado SettingWithCopyWarning.
+
+¿Por qué? Porque al usar corchetes dobles encadenados, Pandas no sabe si estás intentando modificar la tabla original o si estás intentando modificar una "copia temporal" en la memoria que se va a destruir un segundo después.
+
+Al usar .loc, le garantizas a Pandas: "Estoy apuntando directamente a la base de datos principal, haz el cambio de forma permanente".
+
+Tu equivalencia en SQL
+Como siempre, para anclar el concepto a tu conocimiento de bases de datos, lo que acabas de escribir es el equivalente exacto al comando UPDATE en SQL:
+
+SQL
+UPDATE df 
+SET year_released = 1984 
+WHERE name = 'Tetris';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #------------ METODO WHERE() ----------------
 # si es true se mantiene, si es false se cambia
