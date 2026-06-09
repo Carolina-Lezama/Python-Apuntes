@@ -604,6 +604,8 @@ listaVIP = ['Role-Playing', 'Strategy', 'Puzzle']
 resultado = df[((df['critic_score'] >= 90) | (df['user_score'] >= 9)) & (df['genre'].isin(listaVIP))]
     # En Pandas, cuando usas & y |, los paréntesis son obligatorios.
 
+(df['na_sales'] > 0) | (df['eu_sales'] > 0) # Mascara
+
 #.............Atajo para fechas................
 # Cuando tienes años seguidos puedes reemplazar el .isin() por .between()
 
@@ -624,89 +626,58 @@ df_filtered = df[df['year_of_release'].between(1980, 1990, inclusive='left')]
     # 'left': Incluye solo el la izquierda
     # 'right': Incluye solo el de la derecha
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#...............Actualizar un dato específico dentro de un DataFrame...............
 df.loc[df['name'] == 'Tetris', 'year_released'] = 1984
-¡Pienso que es el código perfecto! De hecho, es literalmente la forma más profesional, segura y recomendada por la industria para actualizar un dato específico dentro de un DataFrame.
+    # Se usa un sistema de coordenadas espaciales para apuntar a una celda (o celdas) y sobrescribir su valor.
+# 1. Filtrado logico
+# 2. Seleccion de columna para esa fila
+# 3. Reasignacion de valor
 
-Si estuvieras en una revisión de código (Code Review), cualquier desarrollador Senior te aprobaría esta línea de inmediato.
-
-Aquí te explico exactamente por qué este filtro es tan bueno y qué problema gigante te está evitando:
-
-La anatomía de la corrección perfecta
-Como vimos antes, .loc busca usando las etiquetas. Pero aquí lo estás usando como un sistema de coordenadas espaciales para apuntar con láser a una celda (o celdas) en específico y sobrescribir su valor.
-
-Se divide en tres partes exactas:
-
-La Coordenada Y (Las Filas): df['name'] == 'Tetris'
-En lugar de pasarle un número o un nombre de fila estático, le pasaste una pregunta lógica. Pandas filtra la tabla y localiza únicamente la fila (o filas) donde el juego es Tetris.
-
-La Coordenada X (La Columna): 'year_released'
-Le dices exactamente en qué columna de esa fila quieres pararte.
-
-La Asignación: = 1984
-El signo de igual reemplaza el valor viejo (quizás era un nulo NaN o un año equivocado) e inyecta el 1984 directamente en la memoria de la tabla original.
-
-Lo que evitaste: El terror del SettingWithCopyWarning
-Muchos analistas principiantes intentan hacer esta misma actualización usando la sintaxis de filtros que vimos hace rato, escribiendo algo así (que es incorrecto):
-
-Python
 # EL MODO INCORRECTO (Chained Indexing)
 df[df['name'] == 'Tetris']['year_released'] = 1984
-Si ejecutas eso, Python se vuelve loco y te lanza un bloque rojo de error gigante llamado SettingWithCopyWarning.
-
-¿Por qué? Porque al usar corchetes dobles encadenados, Pandas no sabe si estás intentando modificar la tabla original o si estás intentando modificar una "copia temporal" en la memoria que se va a destruir un segundo después.
-
-Al usar .loc, le garantizas a Pandas: "Estoy apuntando directamente a la base de datos principal, haz el cambio de forma permanente".
-
-Tu equivalencia en SQL
-Como siempre, para anclar el concepto a tu conocimiento de bases de datos, lo que acabas de escribir es el equivalente exacto al comando UPDATE en SQL:
-
-SQL
-UPDATE df 
-SET year_released = 1984 
-WHERE name = 'Tetris';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # Al usar corchetes dobles encadenados, Pandas no sabe si estás intentando modificar la tabla original o una "copia temporal" en la memoria que se va a destruir un segundo después.
 
 #------------ METODO WHERE() ----------------
-# si es true se mantiene, si es false se cambia
-data = pd.Series([10, 20, 30, 40, 50])
-filtered = data.where(data <= 30, 0) # Reemplazar todos los valores mayores a 30 por 0
-df['platform'] = df['platform'].where(df['platform'] != 'NES', 'Nintendo Entertainment System')  # Solo reemplaza 'NES', el resto se mantiene igual
+# Al filtrar mantiene el tamaño y la forma original de tu tabla, pero "censura" o reemplaza los valores que no cumplen con tu regla.
+# .where(): Conserva los verdaderos, reemplaza los falsos.
 
-(df['na_sales'] > 0) | (df['eu_sales'] > 0) #si es mayor sera true, si es menor sera false
+# Uso de filtro clasico, destruye las filas que no cumplen
+df = df[df['ventas'] > 100]
+# Conservar todo pero aplicar filtro, aplica NaN a las filas que no cumplen
+df['ventas'].where(df['ventas'] > 100)
+
+# Si no quieres que los valores falsos se vuelvan NaN, puedes inyectar un valor por defecto usando other.
+
+# Conserva el precio DONDE sea mayor a 0. Si no, ponle 0.0
+df['precio'] = df['precio'].where(df['precio'] > 0, other=0.0)
+
+data = pd.Series([10, 20, 30, 40, 50])
+filtered = data.where(data <= 30, 0) # Sin especificar el parametro other
+
+df['platform'] = df['platform'].where(df['platform'] != 'NES', 'Nintendo Entertainment System')  
+# Solo reemplaza 'NES', el resto se mantiene igual
 
 df[['na_sales', 'eu_sales']] = df[['na_sales', 'eu_sales']].where((df['na_sales'] > 0) | (df['eu_sales'] > 0), None)
+
+#------------ METODO MASK() ----------------
+# Hace literalmente lo contrario de where()
+# .mask(): Reemplaza los verdaderos (los enmascara), conserva los falsos.
+
+# Enmascara (borra) el precio si es mayor a 1000 (lo vuelve NaN)
+df['precio'].mask(df['precio'] > 1000)
+
+#.....................WHERE + IS/Na/in......................
+
+
+
+
+
+
+
+
+
+
+
 
 rare_publishers = ['Red Flagship', 'Max Five', '989 Sports']
 df['publisher'] = df['publisher'].where(~df['publisher'].isin(rare_publishers), 'other')
