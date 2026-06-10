@@ -400,6 +400,8 @@ df['order_status'].value_counts(normalize=True)
 # Hacer visibles los datos faltantes
 # Este parámetro obligará a la función a contar los NaN como si fueran una categoría más.
 df['col_1'].value_counts(dropna=False) 
+print(df['source'].value_counts(dropna=False))
+print(df['source'].value_counts(dropna=False).sort_index())
 
 # Agrupar números continuos en rangos
 # Agrupará todas las en grandes bloques o rangos, mostrándo cuantas categorias caen dentro de cada rango.
@@ -424,15 +426,23 @@ oceans = pd.Series(
 oceans.index = [1, 2, 3, 4, 5] 
 
 #------------ ORDENAR DATOS ----------------
+# Puede ordenar la tabla completa o grupos de filas dentro de ella.
+
 # .sort_values() es el equivalente directo y exacto de ORDER BY en SQL.
 # Por valor numerico o string
 
 # Ordena toda la tabla dandole una(s) columna(s) por la cual ordenar
 df.sort_values(by='Stage', ascending=True, inplace=True) # ASC por defecto
 df.sort_values(by=['categoria', 'precio'], ascending=[True, False])
+df.sort_values(by='radius').head(10)
 
 # Ordenar una sola columna
 df['radius'].sort_values(inplace=True) 
+df['radius'].sort_values().head(10)
+
+exo_small_14 = df[df['radius'] < 1]
+exo_small_14 = exo_small_14[exo_small_14['discovered'] == 2014]
+print(exo_small_14.sort_values(by='radius', ascending=False))
 
 #.............Ordenar el index.............
 # ordena usando las etiquetas de las filas (el índice)
