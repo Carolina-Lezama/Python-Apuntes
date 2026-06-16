@@ -1,5 +1,70 @@
+#------------IMPORTAR NUMPY---------------
+import numpy as np
+
+#------------CREAR COLUMNAS CON APPLY()---------------
+# Toma valores de una columna DataFrame y les aplica una función.
+# Agrupar los datos en nuevas categorías, no necesariamente numericas o categoricas
+
+
+def era_group(year):
+    if year < 2000:
+        return 'retro'
+    elif year < 2010:
+        return 'modern'
+    elif year >= 2010:
+        return 'recent'
+    else:
+        return 'unknown'
+
+df['era_group'] = df['year_of_release'].apply(era_group)
+print(df['era_group'].value_counts())
+
+
+
+df['territory_group'] = df.apply(post_code_and_address_to_territory_group, axis=1)
+
+
+
+def score_group(score):
+    if score < 60:
+        return 'low'
+    elif score < 80:
+        return 'medium'
+    elif score >= 80:
+        return 'high'
+    else:
+        return 'no score'
+df['score_categorized'] = df['critic_score'].apply(score_group)
+
+def avg_score_group(row):
+    critic_score = row['critic_score']
+    user_score = row['user_score']
+    avg_score = (critic_score + user_score * 10) / 2
+
+    if avg_score < 60:
+        return 'low'
+    elif 60 <= avg_score <= 79:
+        return 'medium'
+    elif avg_score >= 80:
+        return 'high'
+col_names = ['critic_score', 'user_score']
+test_low  = pd.Series([10, 1.0], index=col_names)
+test_med  = pd.Series([65, 6.5], index=col_names)
+test_high = pd.Series([99, 9.9], index=col_names)
+rows = [test_low, test_med, test_high]
+for row in rows:
+    print(avg_score_group(row))
+
+
+
+
+
+
+
+
 #------------CONVERTIR A OTRO TIPO DE DATOS---------------
 df['column'] = df['column'].astype('int') #no sirve de float a int
+
 
 df['col1'] = pd.to_numeric(df['col1'], errors='coerce')  #string a entero
     #errors='raise' (por defecto): se detiene y lanza un error 
@@ -13,8 +78,7 @@ np.array_equal(df['col1'], df['col1'].astype('int')) #saber si todos son enteros
 df['SSN'] = df['SSN'].str.replace('-', '').astype(int) # Garantía de que la columna 'SSN' no tiene guiones y su conversión a entero
 df['platform'] = df['platform'].astype('category')
 
-#------------IMPORTAR NUMPY---------------
-import numpy as np
+
 
 #------------CAMBIAR DATO A DATETIME---------------
 df['col1'] = pd.to_datetime(df['col1'], format='%Y-%m-%dT%H:%M:%SZ') #%y año en 2 digitos, %I formato de 12h, 
@@ -69,52 +133,7 @@ df['average_sales'] = df[['na_sales', 'eu_sales', 'jp_sales']].mean(axis=1) #axi
 
 df['total_sales'] = df['quantity'] * df['price']
 
-#------------CREAR COLUMNAS CON APPLY()---------------
-# toma valores de una columna DataFrame y les aplica una función.
-df['territory_group'] = df.apply(post_code_and_address_to_territory_group, axis=1)
 
-def era_group(year):
-    if year < 2000:
-        return 'retro'
-    elif year < 2010:
-        return 'modern'
-    elif year >= 2010:
-        return 'recent'
-    else:
-        return 'unknown'
-
-df['era_group'] = df['year_of_release'].apply(era_group)
-print(df['era_group'].value_counts())
-
-def score_group(score):
-    if score < 60:
-        return 'low'
-    elif score < 80:
-        return 'medium'
-    elif score >= 80:
-        return 'high'
-    else:
-        return 'no score'
-df['score_categorized'] = df['critic_score'].apply(score_group)
-
-def avg_score_group(row):
-    critic_score = row['critic_score']
-    user_score = row['user_score']
-    avg_score = (critic_score + user_score * 10) / 2
-
-    if avg_score < 60:
-        return 'low'
-    elif 60 <= avg_score <= 79:
-        return 'medium'
-    elif avg_score >= 80:
-        return 'high'
-col_names = ['critic_score', 'user_score']
-test_low  = pd.Series([10, 1.0], index=col_names)
-test_med  = pd.Series([65, 6.5], index=col_names)
-test_high = pd.Series([99, 9.9], index=col_names)
-rows = [test_low, test_med, test_high]
-for row in rows:
-    print(avg_score_group(row))
 
 #------------METODO AGG()---------------
 #usa un diccionario como entrada, claves son nombres de columnas y valores  son las funciones

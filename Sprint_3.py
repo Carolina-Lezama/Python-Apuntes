@@ -677,23 +677,11 @@ df[['na_sales', 'eu_sales']] = df[['na_sales', 'eu_sales']].where((df['na_sales'
 df['precio'].mask(df['precio'] > 1000)
 
 #.....................WHERE + IS/Na/in......................
-
-
-
-
-
-
-
-
-
-
-
-
 rare_publishers = ['Red Flagship', 'Max Five', '989 Sports']
 df['publisher'] = df['publisher'].where(~df['publisher'].isin(rare_publishers), 'other')
+# Other permite agrupar los rare_publishers en una nueva categoria conjunta bajo una sola categoria
+# Other es el nombre de la etiqueta, no un parametro
 
 df['genre'] = df['genre'].where(~df['genre'].isin(genres), 'Misc')
 
 df['year_released'] = df['year_released'].where(~((df['name'] == 'Tetris') & (df['year_released'].isna())),1984)
-
-
