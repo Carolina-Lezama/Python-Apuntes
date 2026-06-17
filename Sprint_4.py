@@ -5,7 +5,6 @@ import numpy as np
 # Toma valores de una columna DataFrame y les aplica una función.
 # Agrupar los datos en nuevas categorías, no necesariamente numericas o categoricas
 
-
 def era_group(year):
     if year < 2000:
         return 'retro'
@@ -15,14 +14,13 @@ def era_group(year):
         return 'recent'
     else:
         return 'unknown'
-
 df['era_group'] = df['year_of_release'].apply(era_group)
 print(df['era_group'].value_counts())
 
 
-
-df['territory_group'] = df.apply(post_code_and_address_to_territory_group, axis=1)
-
+def example():
+    '''Vacia'''
+df['territory_group'] = df.apply(example, axis=1)
 
 
 def score_group(score):
@@ -35,6 +33,44 @@ def score_group(score):
     else:
         return 'no score'
 df['score_categorized'] = df['critic_score'].apply(score_group)
+
+
+# Funcion abajo 
+df['game_category'] = df.apply(era_sales_group, axis=1)
+
+#------------CATEGORIAS CON FUNCIONES DE FILA---------------
+
+def era_sales_group(row):
+    year = row['year_of_release']
+    na_sales = row['na_sales']
+    eu_sales = row['eu_sales']
+    jp_sales = row['jp_sales']
+
+    total_sales = na_sales + eu_sales + jp_sales
+
+    if year < 2000:
+        if total_sales < 1:
+            return 'retro'
+        else:
+            return 'classic'
+    if year < 2010:
+        if total_sales < 1:
+            return 'modern'
+        else:
+            return 'classic'
+    if year >= 2010:
+        if total_sales < 1:
+            return 'recent'
+        else:
+            return 'big hit'
+row = df.iloc[0] # usa la primera fila como input de ejemplo
+print('Este juego es', era_sales_group(row))
+
+column_names = ['year_of_release', 'na_sales', 'eu_sales', 'jp_sales']
+row_values = [2000, 0.1, 0.25, 0]
+row = pd.Series(row_values, index=column_names)
+print('Este juego es', era_sales_group(row))
+
 
 def avg_score_group(row):
     critic_score = row['critic_score']
@@ -54,7 +90,6 @@ test_high = pd.Series([99, 9.9], index=col_names)
 rows = [test_low, test_med, test_high]
 for row in rows:
     print(avg_score_group(row))
-
 
 
 
