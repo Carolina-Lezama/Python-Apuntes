@@ -91,11 +91,60 @@ rows = [test_low, test_med, test_high]
 for row in rows:
     print(avg_score_group(row))
 
+#------------REDIMENCIONAR SERIES---------------
+# Convertir un arreglo de una dimensión (1D) en una matriz de dos dimensiones (2D) con una sola columna.
+# Los algoritmos de ML (como StandardScaler o RandomForest) exigen que los datos (X) sean de dos dimensiones (filas y columnas), incluso si solo vas a entrenarlos con una sola variable.
+
+# 1. Tienes un arreglo plano (1 Dimensión)
+edades = np.array([25, 30, 35, 40])
+print(edades.shape) 
+# Resultado: (4,) -> Tiene 4 elementos, pero no tiene columnas. Es una simple lista.
+
+edades_2d = edades.reshape((-1, 1))
+print(edades_2d.shape)
+# Resultado: (4, 1) -> Ahora tiene 4 filas y 1 columna. Es una matriz.
+
+#PASO 2 DETERMINAR LAS CARACTERISTICAS
+X=ingre_df['ingresos']  #FUNCION LINEAL Y=A-BX-46
+Y=ingre_df['gastos']
+X_procesada=X.values.reshape((-1,1))
+Y_procesada=Y.values.reshape((-1,1))
+
+#------------Dividir los datos en train y test---------------
+from sklearn.model_selection import train_test_split
+# Split the dataset into training and testing sets  test_size=0.2 el 20% para datos de prueba
+X_train, X_test, y_train, y_test = train_test_split(X_procesada, Y_procesada, test_size=0.2, random_state=42)
+
+# Print the shapes of the training and testing sets
+print("Training set shape:", X_train.shape, y_train.shape)
+print("Testing set shape:", X_test.shape, y_test.shape)
+
+#------------Crear un modelo de regresion lineal---------------
+from sklearn.linear_model import LinearRegression
+modelo_RL_simple=LinearRegression()
+
+# Entrenamiento
+modelo_RL_simple.fit(X_train,y_train)
+
+# Predecir
+# Aqui solo le estamos pasando un dato
+predicc=modelo_RL_simple.predict([ingresos_futuro]) 
+print(f'prediccion de gasto mensual{predicc}')
+
+# Usando todos los datos
+prediccion=modelo_RL_simple.predict(X_test)
+print(prediccion)
 
 
 
 
 
+
+
+
+
+
+falta score,
 
 #------------CONVERTIR A OTRO TIPO DE DATOS---------------
 df['column'] = df['column'].astype('int') #no sirve de float a int
