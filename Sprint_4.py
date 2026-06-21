@@ -135,6 +135,31 @@ print(f'prediccion de gasto mensual{predicc}')
 prediccion=modelo_RL_simple.predict(X_test)
 print(prediccion)
 
+# Score
+# Metrica de exito por defecto, siempre te va a devolver el R² (Coeficiente de Determinación)
+modelo_RL_simple.score(X_train,y_train)
+    # Si el valor se acerca a cero la relación entre x y y es muy débil o inexistente.
+
+#------------Metricas de evaluacion---------------
+# Error cuadratico medio 
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred)
+
+# Coeficiente de Determinación
+from sklearn.metrics import r2_score
+
+#------------Variables dummy pd.get_dummies en Pandas--------------
+# Para transformar variables categóricas en variables ficticias
+# Crea una nueva columna para cada categoría única dentro de la variable categórica original.
+
+data = {'color': ['rojo', 'azul', 'verde', 'rojo', 'azul']}
+df = pd.DataFrame(data)
+df_dummies = pd.get_dummies(df)
+
+# color_azul color_rojo color_verde
+#      0          1          0
 
 
 
@@ -144,9 +169,16 @@ print(prediccion)
 
 
 
-falta score,
 
-#------------CONVERTIR A OTRO TIPO DE DATOS---------------
+
+
+
+
+
+
+
+
+
 df['column'] = df['column'].astype('int') #no sirve de float a int
 
 
