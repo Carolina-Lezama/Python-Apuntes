@@ -140,15 +140,54 @@ print(prediccion)
 modelo_RL_simple.score(X_train,y_train)
     # Si el valor se acerca a cero la relación entre x y y es muy débil o inexistente.
 
-#------------Metricas de evaluacion---------------
-# Error cuadratico medio 
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+#.........................Otro ejemplo de modelo........................
+    # Importar librerias:
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+    # Obtener la informacion
+datos= pd.read_csv('')
+    # Analizar los datos
+datos.info()
+    # Limpieza de los datos
+datos=datos.dropna()
+    # One-hot encoding
+dummies= pd.get_dummies(datos['ocean_proximity'], dtype=int)
+    # Unir ambos dataframes
+datos= datos.join(dummies)
+    # Separar features y target
+X= datos[['total_rooms', 'total_bedrooms', 'households','median_income', '<1H OCEAN', 'INLAND', 'ISLAND', 'NEAR BAY', 'NEAR OCEAN']]
+Y= datos[['median_house_value']]
+    # Dividir 
+X_train, X_test, Y_train, Y_test= train_test_split(X, Y, test_size=0.2, random_state=1000)
+    # Crear el modelo
+modelo_RL_multiple= LinearRegression()
+    # Entrenar el modelo
+modelo_RL_multiple.fit(X_train, Y_train)
+    # Realizar la prediccion
+predicc= modelo_RL_multiple.predict(X_test)
+    # Evaluar el modelo con ECM
+mse=mean_squared_error(Y_test, predicc)
+    # Evaluar el modelo con MAE
+mae=mean_absolute_error(Y_test, predicc)
+    # Evaluar el modelo con R²
+r2=r2_score(Y_test, predicc)
 
-mse = mean_squared_error(y_test, y_pred)
-rmse = mean_squared_error(y_test, y_pred)
+#------------Metricas de evaluacion---------------
+# Error cuadratico medio (ECM), también conocido como MSE (Mean Squared Error)
+from sklearn.metrics import mean_squared_error
+mse = mean_squared_error(y_test, predicc)
 
 # Coeficiente de Determinación
 from sklearn.metrics import r2_score
+r2=r2_score(Y_test, predicc)
+
+# Error absoluto medio (MAE)
+from sklearn.metrics import mean_absolute_error
+mae=mean_absolute_error(Y_test, predicc)
+
+# Error porcentual absoluto medio (MAPE)
 
 #------------Variables dummy pd.get_dummies en Pandas--------------
 # Para transformar variables categóricas en variables ficticias
@@ -161,6 +200,7 @@ df_dummies = pd.get_dummies(df)
 # color_azul color_rojo color_verde
 #      0          1          0
 
+# Permite transformar variables categóricas en un formato numérico que puede ser utilizado por los algoritmos de aprendizaje automático.
 
 
 
