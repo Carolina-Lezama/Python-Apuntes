@@ -202,17 +202,78 @@ df_dummies = pd.get_dummies(df)
 
 # Permite transformar variables categóricas en un formato numérico que puede ser utilizado por los algoritmos de aprendizaje automático.
 
+#..........................Ejemplo de modelo binario.............................
+# Regresion logistica
 
+    # Importar librerias
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+    # Leer archivp
+df=pd.read_csv('Dataset.csv')
+    # Limpieza
+df=df.dropna()
+    # Definir X y y
+columns = ['Profession', 'Degree', 'Depression', 'id']
+X=df.drop('City',axis=1)
+X=X.drop(columns, axis=1)
+y=df['Depression']
+    # Hacer el encoding
 
+data = {'Gender': ['Female', 'Male']}
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df['Gender_code'] = label_encoder.fit_transform(df['Gender'])
+X['Gender_code'] = X['Gender'].map(df.set_index('Gender')['Gender_code'])
+X=X.drop('Gender',axis=1)
 
+data = {'Sleep Duration': ['Others','Less than 5 hours', '5-6 hours', '7-8 hours', 'More than 8 hours']}
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df['Sleep Duration_code'] = label_encoder.fit_transform(df['Sleep Duration'])
+X['Sleep Duration_code'] = X['Sleep Duration'].map(df.set_index('Sleep Duration')['Sleep Duration_code'])
+X=X.drop('Sleep Duration',axis=1)
 
+data = {'Dietary Habits': ['Others', 'Unhealthy','Moderate','Healthy']}
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df['Dietary Habits_code'] = label_encoder.fit_transform(df['Dietary Habits'])
+X['Dietary Habits_code'] = X['Dietary Habits'].map(df.set_index('Dietary Habits')['Dietary Habits_code'])
+X=X.drop('Dietary Habits',axis=1)
 
+data = {'Have you ever had suicidal thoughts ?': ['Yes', 'No']}
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df['suicidal?_code'] = label_encoder.fit_transform(df['Have you ever had suicidal thoughts ?'])
+X['suicidal?_code'] = X['Have you ever had suicidal thoughts ?'].map(df.set_index('Have you ever had suicidal thoughts ?')['suicidal?_code'])
+X=X.drop('Have you ever had suicidal thoughts ?',axis=1)
 
+data = {'Family History of Mental Illness': ['Yes', 'No']}
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df['mental_code'] = label_encoder.fit_transform(df['Family History of Mental Illness'])
+X['mental_code'] = X['Family History of Mental Illness'].map(df.set_index('Family History of Mental Illness')['mental_code'])
+X=X.drop('Family History of Mental Illness',axis=1)
+X.head()
 
-
-
-
-
+    # Dividir los datos
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Escalar los datos
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+    # Crear modelo
+modelo_regresion_logistica=LogisticRegression(max_iter=1000, solver='liblinear') # 'liblinear' para problemas pequeños y binarios
+    # Entrenar modelo
+modelo_regresion_logistica.fit(X_train,y_train)
+    # Realizar predicciones
+y_pred = modelo_regresion_logistica.predict(X_test)
+    # Evaluar el modelo
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}\n") # Muestra el porcentaje de predicciones correctas.
 
 
 
