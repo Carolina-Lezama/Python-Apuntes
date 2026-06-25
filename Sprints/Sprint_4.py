@@ -275,6 +275,53 @@ y_pred = modelo_regresion_logistica.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.2f}\n") # Muestra el porcentaje de predicciones correctas.
 
+#-----------------------Arbol de decision------------------------
+    # Importacion
+from sklearn.tree import DecisionTreeClassifier
+    # Instancia
+model = DecisionTreeClassifier()
+    # Entrenamiento
+model.fit(features, target)
+    # Predicciones
+answer = model.predict(new_features)
+
+#...............Otro ejemplos de pipeline para arbol de decision..................
+    # Importar librerias
+import pandas as pd
+    # Leer informacion
+datos = pd.read_csv("archivo.csv")
+    # Revision superficial de los datos
+datos.info()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
