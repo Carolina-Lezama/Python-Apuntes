@@ -288,20 +288,88 @@ answer = model.predict(new_features)
 #...............Otro ejemplos de pipeline para arbol de decision..................
     # Importar librerias
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
     # Leer informacion
 datos = pd.read_csv("archivo.csv")
     # Revision superficial de los datos
 datos.info()
+    # Volver categoricas columnas binarias
+def categorico_a_numerico_Genero(valor):
+  if valor == "Male":
+    return 0
+  else:
+    return 1
+datos['Gender']=datos['Gender'].apply(categorico_a_numerico_Genero)
+    # Igual es posible con varias categorias
+def categorico_a_numerico_VARIAS_OPC(valor):
+  if valor == "Sometimes":
+    return 0
+  elif  valor == "Frequently":
+    return 1
+  elif  valor == "Always":
+    return 2
+  elif  valor == "no":
+    return 3
+  else:
+    return
+datos['CAEC']=datos['CAEC'].apply(categorico_a_numerico_VARIAS_OPC)
+datos['CAEC'].value_counts()
+    # Separar features de target
+X = datos.drop(["Obesity"], axis=1)
+y = datos["Obesity"]
+    # Dividir datos
+X_ent, X_pru, y_ent, y_pru = train_test_split(X, y, test_size=.3)
+    # Crear, entrenar y predecir con el modelo
+modelo = DecisionTreeClassifier(max_depth=10)
+modelo.fit(X_ent, y_ent)
+y_predicciones = modelo.predict(X_pru)
+    # Metricas de evaluacion
+accuracy_score(y_pru, y_predicciones)
+    # Ciclo para encontrar los mejores hyperparametros
+resultados = []
+for i in range(1,15):
+  modelo = DecisionTreeClassifier(max_depth=i)
+  modelo.fit(X_ent, y_ent)
+  predicciones = modelo.predict(X_pru)
+  exactitud = accuracy_score(y_pru, predicciones)
+  print(f"Resultado para {i}: {exactitud}")
+  resultados.append(exactitud)
+
+#----------------------------Matriz de confusion----------------------------
+# ¿Qué es y para qué sirve?
+# Se utiliza para evaluar el rendimiento de un modelo de Machine Learning de clasificación.
+# Si un modelo te dice que tiene un "80% de precisión", esa métrica es engañosa. No te dice si el modelo es excelente prediciendo la clase A pero pésimo prediciendo la clase B.
+
+#                             Predicción: Es Spam (1)	 Predicción: No es Spam (0)
+# Realidad: Era Spam (1)      Verdadero Positivo (TP)    Falso Negativo (FN)
+# Realidad: No era Spam (0)   Falso Positivo (FP)        Verdadero Negativo (TN)
 
 
+# Pandas - Devuelve un DataFrame con nombres en las filas y columnas
+import pandas as pd
+matriz_pandas = pd.crosstab(
+    y_real, 
+    y_pred, 
+    rownames=['Realidad'], 
+    colnames=['Predicción del Modelo']
+)
+print(matriz_pandas)
 
+# Scikit-Learn - Devuelve un arreglo de NumPy (una matriz cruda de números)
+from sklearn.metrics import confusion_matrix
+matriz = confusion_matrix(y_real, y_pred)
+print(matriz)
+# Resultado (arreglo crudo):
+# [[45  5]
+#  [10 40]]
 
+# Conclusion: Paso obligatorio inmediatamente después de entrenar cualquier modelo de clasificación para saber si tu algoritmo realmente está aprendiendo o si solo está adivinando una clase y fallando en la otra.
 
-
-
-
-
-
+# --------------Ramdon Forests---------------
+# Clasificacion
+from sklearn.ensemble import RandomForestClassifier
 
 
 
