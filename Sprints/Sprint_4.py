@@ -369,14 +369,92 @@ print(matriz)
 
 # --------------Ramdon Forests---------------
 # Clasificacion
+
+# Importar librerias
 from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 
+# Obtener la informacion
+path = "Obesity prediction.csv"
+X = pd.read_csv(path)
 
+# Visualizacion usando graficos
+    # Histograma de X
+X.hist(figsize=(15,15))
 
+# Label encoding
+data = {'Gender': ['Female', 'Male']}
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df['Gender_code'] = label_encoder.fit_transform(df['Gender'])
+X['Gender_code'] = X['Gender'].map(df.set_index('Gender')['Gender_code'])
+    # Asi con todas las varibles categoricas
 
+# Quitar las variables no numericas
+camposObject= df_X.select_dtypes(include=['object']).columns
+df_X.drop(camposObject, axis=1, inplace=True)
+df_X.drop(['Obesity_code'], axis=1, inplace=True) # Este sera el target
 
+# Determinar y
+Y = X['Obesity_code']
 
+# Division de los datos
+X_train, X_test, Y_train, Y_test= train_test_split(df_X, Y, test_size=0.2, random_state=1000)
 
+# Crear el modelo
+modelo = RandomForestClassifier(random_state=54321, n_estimators=3)
+    # Entrenar el modelo
+modelo.fit(X_train, y_train)
+    # Evaluar el modelo
+modelo.score(X_test, Y_test)
+
+#..........................Funcion para buscar hyperparametros.............................
+def hiperparametros(n_estimator_value):
+  Modelo_hiper = RandomForestClassifier(random_state=54321, n_estimators=n_estimator_value)
+  Modelo_hiper.fit(X_train, Y_train)
+  score = Modelo_hiper.score(X_test, Y_test)
+  return score
+
+estimadores_values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+scores = []
+
+for n_estimator_value in estimadores_values:
+  score = hiperparametros(n_estimator_value)
+  print(f"Score for n_stimator={n_estimator_value}: {score}")
+  scores.append(score)
+
+# Saber el parametro optimo
+max_score = max(scores)
+max_index = scores.index(max_score)
+best_n_estimators = estimadores_values[max_index]
+print(f"El mejor valor para n_estimators es {best_n_estimators} con un score de {max_score}")
+
+#------------CAMBIAR DATO A DATETIME---------------
+df['col1'] = pd.to_datetime(df['col1'], format='%Y-%m-%dT%H:%M:%SZ')
+
+# Formato estadounidense
+string_date = '5/13/13 12:04:00'
+fecha = pd.to_datetime(string_date, format='%m/%d/%y %H:%M:%S') 
+
+raw_date = '20-12-2002Z04:31:00'
+clean_date = pd.to_datetime(raw_date, format='%d-%m-%YZ%H:%M:%S')
+
+df_position['timestamp'] = pd.to_datetime(df_position['timestamp'], format='%Y-%m-%dT%H:%M:%S')
+
+df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'], format='%Y-%m-%dT%H:%M:%SZ')
+
+#------------FUNCIONES A FECHAS---------------
+df['col1'].dt.round('H') #redondear las horas
+
+#------------ZONAS HORARIAS--------------
+df['InvoiceDate'] = df['InvoiceDate'].dt.tz_localize('UTC') # Asigna una zona horaria a una columna de tipo datetime.
+
+df['InvoiceDate_NYC'] = df['InvoiceDate'].dt.tz_convert('America/New_York') 
+# Convierte una columna con zona horaria a otra zona horaria diferente; el valor se remplaza con la lista permitida
+
+#https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 
 
 
@@ -412,24 +490,9 @@ df['platform'] = df['platform'].astype('category')
 
 
 
-#------------CAMBIAR DATO A DATETIME---------------
-df['col1'] = pd.to_datetime(df['col1'], format='%Y-%m-%dT%H:%M:%SZ') #%y año en 2 digitos, %I formato de 12h, 
 
-string_date = '5/13/13 12:04:00'
-fecha = pd.to_datetime(string_date, format='%m/%d/%y %H:%M:%S') #formato estadounidense
 
-raw_date = '20-12-2002Z04:31:00'
-clean_date = pd.to_datetime(raw_date, format='%d-%m-%YZ%H:%M:%S')
 
-position['timestamp'] = pd.to_datetime(position['timestamp'], format='%Y-%m-%dT%H:%M:%S')
-
-df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'], format='%Y-%m-%dT%H:%M:%SZ')
-
-dt_months = position['timestamp'].dt.month
-print(dt_months.head())
-
-#------------FUNCIONES A FECHAS---------------
-df['col1'].dt.round('H') #redondear las horas
 
 #------------ACCEDER A LOS ATRIBUTOS DE UNA FECHA---------------
 df['Day'] = df['InvoiceDate'].dt.day
@@ -442,10 +505,10 @@ print(df[['InvoiceDate', 'Day']].head(5))
     # .dt.weekday → día de la semana (0 = lunes, 6 = domingo)
     # .dt.date → solo la fecha, sin la hora
 
-#------------ZONAS HORARIAS--------------
-df['InvoiceDate'] = df['InvoiceDate'].dt.tz_localize('UTC') #asigna una zona horaria a una columna de tipo datetime.
-df['InvoiceDate_NYC'] = df['InvoiceDate'].dt.tz_convert('America/New_York') #convierte una columna con zona horaria a otra zona horaria diferente; el valor se remplaza con la lista permitida
-#https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
+
+dt_months = position['timestamp'].dt.month
+print(dt_months.head())
+
 
 dt_toronto = position['timestamp'].dt.tz_localize('America/Toronto')
 print(dt_toronto.head())
