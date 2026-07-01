@@ -456,8 +456,58 @@ df['InvoiceDate_NYC'] = df['InvoiceDate'].dt.tz_convert('America/New_York')
 
 #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 
+#------------------- K-means clustering --------------------
 
-
+    # Importacion de liberias
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+    # Consumir los datos
+datos = pd.read_csv("customer_data.csv")
+    # Explorar los datos
+datos.info()
+datos.head()
+    # Visualizacion de datos
+sns.scatterplot(x='Edad', y='Ingresos Anuales (k$)', data=datos, hue='Categoría de Producto Favorito', palette='viridis')
+plt.title('Edad vs Ingresos Anuales vs Categoría de Producto Favorito')
+    # Separar los datos a usar
+X = datos.loc[:, ["Edad", "Ingresos Anuales (k$)"]]
+    # Crear el modelo
+modelo = KMeans(n_clusters=6, random_state=42) # hiperparametros: n_cluster
+    # Entramiento y prediccion
+predicciones = modelo.fit_predict(X)
+    # Creae la columna segmento con el valor de predicciones
+X["prediccion"] = predicciones
+    # Ver a que cluster se asigno cada fila
+etiquetas = modelo.labels_
+print("Grupo asignado a cada punto:", etiquetas)
+    # Visualizacion de clusters
+sns.scatterplot(x='Edad', y='Ingresos Anuales (k$)', data=X, hue="prediccion",palette="bright")
+sns.countplot(x="prediccion", data=X)
+    # Funciones de agregacion
+X.groupby(["prediccion"])["Ingresos Anuales (k$)"].count()
+X.groupby(["prediccion"])["Ingresos Anuales (k$)"].mean() # Promedio en cada segmento
+    # Ver los centroides
+centroides=modelo.cluster_centers_
+print("Centroides:", centroides)
+    # Evaluar con el coeficiente de silueta
+silhouette_avg = silhouette_score(X, etiquetas)
+print("El coeficiente de silueta promedio es:", silhouette_avg)
+    # Gráfico de dispersión en donde grafica los puntos de datos y los centroides.
+plt.figure(figsize=(20, 8))
+scatter = plt.scatter(X["Ingresos Anuales (k$)"], X["Edad"], c=etiquetas, cmap='viridis', marker='.')
+plt.scatter(centroides[:, 1], centroides[:, 0], marker='X', s=100, c='red', label='Centroides') # Agregar centroides
+plt.colorbar(scatter, label="Segmento de la Predcción")
+plt.title("Clústeres K-means de Predicción con Centroides. DATA Clientes csv")
+plt.xlabel("Ingresos Anuales (k$)")
+plt.ylabel("Edad")
+plt.show()
+    
+    
+    
+    
 
 
 
