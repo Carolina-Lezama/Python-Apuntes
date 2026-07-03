@@ -504,10 +504,27 @@ plt.title("Clústeres K-means de Predicción con Centroides. DATA Clientes csv")
 plt.xlabel("Ingresos Anuales (k$)")
 plt.ylabel("Edad")
 plt.show()
-    
-    
-    
-    
+
+#------------------Arbol de isolacion-------------------
+    # Importacion de librerias
+from sklearn.ensemble import IsolationForest
+    # Creacion del modelo
+isolation_forest = IsolationForest(n_estimators=100)
+    # Datos utlizados 
+data = df[['Sales', 'Profit']] # Detecta valores atípicos con base en varios features
+    # Entrenar
+isolation_forest.fit(data)
+    # Revisar entrenamiento
+anomaly_scores = isolation_forest.decision_function(data) # Ver cómo evaluó el modelo las observaciones
+    # Predecir
+estimator = isolation_forest.predict(data) # Clasifica las observaciones y distingue las normales de las atípicas
+
+    # Entrenar y predecir sin revisar el entrenamiento
+estimator = isolation_forest.fit_predict(data)
+
+
+
+
 
 
 
