@@ -522,64 +522,56 @@ estimator = isolation_forest.predict(data) # Clasifica las observaciones y disti
     # Entrenar y predecir sin revisar el entrenamiento
 estimator = isolation_forest.fit_predict(data)
 
+# ---------------------Diagrama de caja-------------------
+plt.boxplot(data['Total'].values)
+plt.ylabel('Total sales')
+plt.title("Valores atípicos en ventas totales")
+plt.show()
 
+# Ver cuántos valores atípicos hay
+boxplot = plt.boxplot(data['Total'].values)
+outliers = list(boxplot["fliers"][0].get_data()[1])
+print(outliers)
+print("Valores atípicos: ", len(outliers))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-df['column'] = df['column'].astype('int') #no sirve de float a int
-
-
-df['col1'] = pd.to_numeric(df['col1'], errors='coerce')  #string a entero
+#-----------------------Cambiar tipo de columna-------------------
+# String a entero
+df['col1'] = pd.to_numeric(df['col1'], errors='coerce')  
     #errors='raise' (por defecto): se detiene y lanza un error 
     #errors='coerce': reemplaza los valores no numéricos con NaN
     #errors='ignore': deja los valores originales
 
-#------------VERIFICAR DATOS---------------
-#true si es todos son iguales, false si uno es distinto
-np.array_equal(df['col1'], df['col1'].astype('int')) #saber si todos son enteros, aunque el tipo de datos sea otro
+df['SSN'] = df['SSN'].str.replace('-', '').astype(int) # Garantía de que la columna no tiene guiones y su conversión a entero
 
-df['SSN'] = df['SSN'].str.replace('-', '').astype(int) # Garantía de que la columna 'SSN' no tiene guiones y su conversión a entero
+df['column'] = df['column'].astype('int') # No sirve de float a int
+df['columna'].astype('int32') # Para ahorrar memoria
+df['columna'].astype('int64')
+df['columna'].astype('Int64') # Permite valores nulos/NaN
+
 df['platform'] = df['platform'].astype('category')
 
-
-
-
-
-
+#------------VERIFICAR DATOS---------------
+np.array_equal(df['col1'], df['col1'].astype('int')) 
+# Saber si todos los datos son enteros, aunque el tipo de datos sea otro
+# Srue si todos cumplen, false si uno es distinto
 
 #------------ACCEDER A LOS ATRIBUTOS DE UNA FECHA---------------
 df['Day'] = df['InvoiceDate'].dt.day
 print(df[['InvoiceDate', 'Day']].head(5))
-    # .dt.year → año
-    # .dt.month → mes
-    # .dt.day → día
-    # .dt.hour → hora
     # .dt.minute → minuto
+    # .dt.hour → hora
+    # .dt.day → día
     # .dt.weekday → día de la semana (0 = lunes, 6 = domingo)
+    # .dt.month → mes
+    # .dt.year → año
     # .dt.date → solo la fecha, sin la hora
 
-
+# Ejemplos
 dt_months = position['timestamp'].dt.month
-print(dt_months.head())
-
-
 dt_toronto = position['timestamp'].dt.tz_localize('America/Toronto')
-print(dt_toronto.head())
 
+# --------------------Gestionar y convertir zonas horarias en una columna de fechas y horas----------------------
+# Tomar una columna que no tiene una zona horaria asignada, darle una y transformar
 df['datetime'] = df['datetime'].dt.tz_localize('CET').dt.tz_convert('EST')
 
 #------------CREAR COLUMNAS EN BASE A VALORES DE OTRAS---------------
@@ -591,30 +583,57 @@ df['eu_sales_share'] = df['eu_sales'] / df['total_sales']
 df['is_nintendo'] = df['publisher'] == 'Nintendo'
 print(df['platform'].str.lower().isin(['gb', 'wii']).head())
 
-df['average_sales'] = df[['na_sales', 'eu_sales', 'jp_sales']].mean(axis=1) #axis=0 (por defecto): calcula el promedio columna por columna.axis=1: calcula el promedio fila por fila
+df['average_sales'] = df[['na_sales', 'eu_sales', 'jp_sales']].mean(axis=1) 
+# axis=0 (por defecto): calcula el promedio columna por columna.
+# axis=1: calcula el promedio fila por fila
 
 df['total_sales'] = df['quantity'] * df['price']
 
-
-
 #------------METODO AGG()---------------
-#usa un diccionario como entrada, claves son nombres de columnas y valores  son las funciones
+# Usa un diccionario como entrada, claves son nombres de columnas y valores con las funciones
 agg_dict = {'critic_score': 'mean', 'jp_sales': 'sum'}
 grp = df.groupby(['platform', 'genre'])
 print(grp.agg(agg_dict))
 
 def double_it(sales):
-    sales = sales.sum() * 2 # multiplica la suma anterior por 2
+    sales = sales.sum() * 2 # Multiplica la suma anterior por 2
     return sales
 agg_dict = {'jp_sales': double_it}
 grp = df.groupby(['platform', 'genre'])
 print(grp.agg(agg_dict))
 
-
 df['total_sales'] = df['na_sales'] + df['eu_sales'] + df['jp_sales']
 grp = df.groupby('genre')
 agg_dict = { 'total_sales': 'sum', 'na_sales': 'mean', 'eu_sales': 'mean', 'jp_sales': 'mean'}
 genre = grp.agg(agg_dict)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #------------TABLAS DINAMICAS---------------
 pivot_data = df.pivot_table(index='genre', #la columna cuyos valores se vuelven los indices
@@ -771,7 +790,6 @@ corr_mat = df.corr()
 male_corr = corr_mat.loc['male', ['height', 'weight', 'age']]
 print(male_corr)
 
-
 #------------Gráficos de barras-------------
 #nos permitirán comparar propiedades numéricas entre categorías
 df.plot(x='year',
@@ -830,45 +848,5 @@ df_40s['weight'].plot(kind='hist', bins=20, alpha=0.3)
 plt.legend(['20s', '30s', '40s'])
 plt.show()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-df.plot(x='date',
-        y='volume',
-        title='Historic SBUX volume',
-        xlabel="Date",
-        ylabel="Volume",
-        ylim=[1e6, 7e7],
-        legend=False,
-        rot=50)
-plt.show()
-plt.show()
-
-
-cols = ['open', 'close']
-df.plot(title='Historic SBUX price',
-        x='date',
-        xlabel="Date",
-        ylabel="Share price / USD",
-        rot=50,
-        y=cols)
-
-
-
-
-
-df.plot(x="t", y="t-1", kind="scatter", alpha=0.1, xlabel="Current value",
-        ylabel="Previous value", title="Current vs Previous", figsize=(10,10), rot=45)
 
 
