@@ -1,64 +1,19 @@
-# Desviacion estandar
-
-Una medida que nos dice qué tan "rebeldes" o "dispersos" son los datos.
-
-Nos indica qué tanto se alejan, en promedio, los datos respecto al valor central (el promedio o la media).
-
-### Imagina que tenemos dos grupos de estudiantes y ambos grupos tienen un promedio de calificación de 80.
-
-Grupo A: Todos sacaron exactamente 80. (Aquí no hay dispersión; la desviación estándar es 0).
-
-Grupo B: Unos sacaron 100, otros 60, otros 90 y otros 70. El promedio sigue siendo 80, pero los datos están muy variados. (Aquí hay una desviación estándar alta).
-
-Un valor por sí solo no significa si es "mucho" o "poco". Todo depende de cuál sea tu promedio y de qué estés midiendo.
-
-Significa que, en promedio, los datos se alejan x unidades de la media.
-
-# Descripciones numéricas
-
-Puedes llamar a describe() en un DataFrame o en un Series
-
-        print(data.describe())
-        print(data['capacity_mw'].describe())
-
-![alt text](imagenes/image-3.png)
-
-De forma predeterminada, se ignoran las columnas no numericas
-
-# Descripciones no numéricas
-
-        print(data['country'].describe())
-
-![alt text](imagenes/image-5.png)
-
-'top': el valor que aparece con más frecuencia;
-
-Solo las columnas no numéricas:
-
-        print(data.describe(include='object'))
-
-# Descripcion para todos los datos
-
-        print(data.describe(include='all'))
-
-![alt text](imagenes/image-5.png)
-
 # ¿Qué es la regresión lineal?
 
-La regresión lineal es una técnica de análisis de datos que predice el valor de datos desconocidos mediante el uso de otro valor de datos relacionado y conocido(predecir el valor de una variable en función del valor de otra variable).
+Es una técnica de análisis de datos que predice el valor de datos desconocidos mediante el uso de otro valor de datos relacionado y conocido(predecir el valor de una variable en función del valor de otra variable).
 
-- La variable que desea predecir se llama variable dependiente.
-- La variable que está utilizando para predecir el valor de la otra variable se llama variable independiente.
+- La variable que deseas predecir se llama variable dependiente(y).
+- La variable que está utilizando para predecir el valor de otra se llama variable independiente(x).
 
-Los científicos de datos primero entrenan el algoritmo en conjuntos de datos conocidos o etiquetados y, a continuación, utilizan el algoritmo para predecir valores desconocidos.
+Los científicos de datos primero entrenan el algoritmo con datos conocidos (etiquetados o no) y, luego, utilizan el algoritmo para predecir valores desconocidos.
 
-Debe existir una relación lineal entre las variables independientes y las dependientes. Para determinar esta relación, los científicos de datos crean una gráfica de dispersión.
+Debe existir una relación x y y. Para determinar esta relación, los científicos de datos crean una gráfica de dispersión.
 
 Los científicos de datos utilizan residuos para medir la precisión de la predicción. Un residuo es la diferencia entre los datos observados y el valor previsto.
 
 ### Normalidad
 
-Las gráficas Q-Q, determinan si los residuos se distribuyen normalmente. Si los residuos no están normalizados, puede probar los datos para detectar valores atípicos aleatorios o valores que no sean típicos. Eliminar los valores atípicos o realizar transformaciones no lineales puede solucionar el problema.
+Las gráficas Q-Q, determinan si los residuos se distribuyen normalmente. Si los residuos no están normalizados, puede probar los datos para detectar valores atípicos o aleatorios. Eliminar los valores atípicos o realizar transformaciones no lineales puede solucionar el problema.
 
 ### Homocedasticidad
 
@@ -66,88 +21,27 @@ La homocedasticidad supone que los residuos tienen una variación constante o de
 
 # ¿Cuáles son los tipos de regresión lineal?
 
-Regresión lineal simple: modelar la relación entre dos variables
-Regresión lineal múltiple: el conjunto de datos contiene una variable
+- Regresión lineal simple: Eelación entre dos variables
+
+- Regresión lineal múltiple: Una variable
 dependiente y múltiples variables independientes
 
 # Regresión logística
 
 Medir la probabilidad de que se produzca un evento. La predicción es un valor entre 0 y 1, donde 0 indica un evento que es poco probable que ocurra y 1 indica una probabilidad máxima de que suceda.
 
-# 2. Creación del Modelo Regresión Lineal.
-
-1. Obtener informacion
-2. Realizar limpieza
-3. One-Hot Encoding.
-4. Definir x y y
-5. Hacer el split de entrenamiento, test y valid
-6. Crear el modelo LinearRegression()
-7. Entrenar el modelo con .fit(x, y)
-8. Usar predict para obtener los valores a comprobar
-9. Evaluar el modelo
-
-## Dimenciones de X y Y
-
-Por defecto, y es una Serie de Pandas, básicamente una lista unidimensional (un vector plano).
-
-El problema es que LinearRegression de sklearn es muy estricto: siempre espera una matriz de dos dimensiones (filas, columnas) tanto para las características (X) como para las etiquetas (Y)
-
-#### ¿Qué hace reshape((-1, 1))?
-
-El método .reshape() cambia la "forma" de tu arreglo sin cambiar los datos que contiene.
-
-La sintaxis recibe dos argumentos: (filas, columnas). Al pasarle (-1, 1), le estás dando una instrucción muy específica a Python:
-
-El 1 (Columnas)
-El -1 (Filas): Todas las filas en una sola columna
-
-# Error Cuadrático Medio (ECM)
-
-MSE (Mean Squared Error).
-
-RMSE (Root Mean Squared Error).
-
-Medida estadística que se utiliza para evaluar la calidad de un modelo
-predictivo. Nos indica qué tan lejos están, en promedio, las
-predicciones de nuestro modelo de los valores reales.
-
-## ¿Cómo se calcula el ECM?
-
-1. Calcular la diferencia entre el valor real y el valor predicho para cada dato
-2. Elevar al cuadrado cada diferencia: penalizar más los errores
-   grandes
-3. Calcular el promedio
-
-Aunque el ECM no tiene una interpretación directa en unidades
-físicas, nos proporciona una medida numérica de la precisión de nuestro modelo.
-
-# Casos de Uso de Regresión Lineal Simple
-
-Para un modelo de regresión lineal simple, la clave está en que solo podemos utilizar una única variable predictora (X) para estimar la variable de respuesta (Y).
-
-- Crea un modelo de Regresión Lineal Simple para predecir consumo de combustible según la distancia
-- Consumo eléctrico
-  residencial
-- Estimación del salario basado en los años de experiencia
-
-# Regresión Lineal Múltiple
-
-Calcular el target en base a 2 o + features.
-
-La regresión múltiple reconoce que el mundo real es complejo y que un fenómeno casi siempre está determinado por múltiples factores a la vez.
-
-# Regresion logistica
-
-Análisis de clasificación utilizado para predecir el resultado de una variable categórica (número limitado de categorías). Es útil para modelar la probabilidad de un evento ocurriendo en función de otros factores. Las probabilidades que describen el posible resultado de un único ensayo se modelan como una función de variables explicativas, utilizando una función logística.
+Análisis de clasificación utilizado para predecir el resultado de una variable categórica (número limitado de categorías). Es útil para modelar la probabilidad de un evento ocurriendo en función de otros factores.
 
 La regresión logística es una técnica de análisis de datos que utiliza las matemáticas para encontrar las relaciones entre dos factores de datos. Luego, utiliza esta relación para predecir el valor de uno de esos factores basándose en el otro.
 
-Para la regresión logística, hay que formular la pregunta para obtener resultados concretos:
+Para la regresión logística, hay que formular la pregunta para obtener resultados concretos
 
-- ¿Los días de lluvia afectan nuestras ventas mensuales? (sí o no)
-- ¿Qué tipo de actividad de tarjeta de crédito realiza el cliente? (autorizado, fraudulento o potencialmente fraudulento)
 
-En estadística, las variables son los factores o atributos de datos cuyos valores varían. Para cualquier análisis, ciertas variables son independientes o explicativas. Otras variables son variables dependientes o de respuesta; sus valores dependen de las variables independientes.
+
+
+
+
+
 
 ### Regresión logística binaria
 
