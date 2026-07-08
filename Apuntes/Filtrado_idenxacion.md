@@ -1,3 +1,19 @@
+# Indexación lógica (booleana)
+Encontrar todas las filas en las que se cumple cierta condición.
+
+        print(df['genre'] == 'pop')
+        print(df.loc[:, 'genre'] == 'pop')
+
+El boleano indica si se cumplio la condicion o no. 
+
+Ahora podemos utilizar el resultado obtenido en el paso anterior para filtrar la tabla
+original.
+
+        print(df.loc[df.loc[:, 'genre'] == 'pop'])
+        print(df.loc[df['genre'] == 'pop'])
+        
+        print(df[df['genre'] == 'pop'])
+
 # Indexación por coordenadas
 La indexación permite acceder a una celda determinada de la tabla utilizando dos coordenadas: el número de la fila y el nombre de la columna.
 

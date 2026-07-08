@@ -104,7 +104,9 @@ edades_2d = edades.reshape((-1, 1))
 print(edades_2d.shape)
 # Resultado: (4, 1) -> Ahora tiene 4 filas y 1 columna. Es una matriz.
 
-#PASO 2 DETERMINAR LAS CARACTERISTICAS
+# PASO 2 DETERMINAR LAS CARACTERISTICAS
+
+# Para modelo de una sola caracteristica
 X=ingre_df['ingresos']  #FUNCION LINEAL Y=A-BX-46
 Y=ingre_df['gastos']
 X_procesada=X.values.reshape((-1,1))
@@ -114,10 +116,6 @@ Y_procesada=Y.values.reshape((-1,1))
 from sklearn.model_selection import train_test_split
 # Split the dataset into training and testing sets  test_size=0.2 el 20% para datos de prueba
 X_train, X_test, y_train, y_test = train_test_split(X_procesada, Y_procesada, test_size=0.2, random_state=42)
-
-# Print the shapes of the training and testing sets
-print("Training set shape:", X_train.shape, y_train.shape)
-print("Testing set shape:", X_test.shape, y_test.shape)
 
 #------------Crear un modelo de regresion lineal---------------
 from sklearn.linear_model import LinearRegression

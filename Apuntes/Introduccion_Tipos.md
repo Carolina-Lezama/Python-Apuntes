@@ -97,3 +97,37 @@ Solo una parte de los datos de entrenamiento conoce el objetivo
 # Calcular numero de nulos por columna
 
         guardado = data['owner'].isna().sum()
+
+# Aprendizaje no supervisado
+
+Utiliza algoritmos de machine learning (ML) para analizar y agrupar conjuntos de datos sin etiquetar. Estos algoritmos descubren patrones ocultos o agrupaciones de datos sin necesidad de intervención humana.
+
+### tareas principales para el aprendizaje no supervisado:
+
+- clustering
+- asociación
+- reducción de dimensionalidad
+
+## Agrupación en clústeres
+
+Agrupa datos sin etiquetar en función de sus similitudes o diferencias. Se emplean para procesar objetos de datos (sin procesar y sin clasificar) en grupos representados por estructuras o patrones en la información.
+
+### Tipos de algoritmos de agrupación en clústeres:
+
+- exclusivos
+- superpuestos
+- jerárquicos
+- probabilísticos
+
+# Agrupación en clústeres exclusiva
+
+Estipula que: un punto de datos sólo puede existir en un conglomerado (agrupación en clústeres "dura")
+
+
+
+# Agrupación en clústeres superpuesta
+
+Permite que los puntos de datos pertenezcan a múltiples clústeres con grados separados de pertenencia.
+
+Con el aprendizaje no supervisado, descubrirás cómo buscar patrones en datos sin etiquetar. El aprendizaje no supervisado es un tipo de aprendizaje automático sin una característica objetivo: los algoritmos encuentran relaciones entre las observaciones por sí mismos. La elección del algoritmo depende del tipo de problema.
+
