@@ -605,63 +605,63 @@ grp = df.groupby('genre')
 agg_dict = { 'total_sales': 'sum', 'na_sales': 'mean', 'eu_sales': 'mean', 'jp_sales': 'mean'}
 genre = grp.agg(agg_dict)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #------------TABLAS DINAMICAS---------------
-pivot_data = df.pivot_table(index='genre', #la columna cuyos valores se vuelven los indices
-                            columns='platform', # la columna cuyos valores se vuelven las columnas
-                            values='eu_sales', #los datos que van dentro de la tabla
-                            aggfunc='sum' #funcion de agregacion
+pivot_data = df.pivot_table(index='genre', # Cuyos valores se vuelven los indices
+                            columns='platform', # Cuyos valores se vuelven las columnas
+                            values='eu_sales', # Los datos que van dentro de la tabla
+                            aggfunc='sum' # Funcion de agregacion
 )
 
 #------------COMBINAR DATAFRAMES CON CONCAT()---------------
-mean_score = df.groupby('publisher')['critic_score'].mean() #ambos comparten mismo indice
+# Ambos comparten mismo indice
+# index=0 concatenará filas y index=1 concatenará columnas
+
+# Concatenar columnas
+mean_score = df.groupby('publisher')['critic_score'].mean() 
+
 df['total_sales'] = df['na_sales'] + df['eu_sales'] + df['jp_sales']
 num_sales = df.groupby('publisher')['total_sales'].sum()
-df_concat = pd.concat([mean_score, num_sales], axis='columns') # axis para asegurarnos de que se combinaran como columnas.
-df_concat.columns = ['avg_critic_score', 'total_sales'] #renombrar columnas
-# index=0 concatenará filas y index=1 concatenará columnas
-#Para concatenar filas  axis='index'
 
-rpgs = df[df['genre'] == 'Role-Playing']
-platformers = df[df['genre'] == 'Platform']
-df_concat = pd.concat([rpgs, platformers])
-print(df_concat[['name', 'genre']])
+df_concat = pd.concat([mean_score, num_sales], axis='columns') # Combinar como columnas
+df_concat.columns = ['avg_critic_score', 'total_sales'] #renombrar columnas
+
 
 total_sales = df.groupby('platform')['total_sales'].sum()
 num_pubs = df.groupby('platform')['publisher'].nunique()
+
 platforms = pd.concat([total_sales, num_pubs], axis='columns')
+
 platforms.columns = ['total_sales', 'num_publishers']
 print(platforms)
 
+# Concatenar filas
+rpgs = df[df['genre'] == 'Role-Playing']
+platformers = df[df['genre'] == 'Platform']
+
+df_concat = pd.concat([rpgs, platformers])
+print(df_concat[['name', 'genre']])
+
 #------------COMBINAR DATAFRAMES CON MERGE()---------------
-#afecta a la cantidad de datos, combinar entradas que tienen los datos
+# Para combinar dos o más DataFrames basándose en columnas o índices comunes
+# Busca coincidencias entre ambos DataFrames para alinear sus filas.
+
+df_resultado = pd.merge(df_izquierda, df_derecha, on='columna_clave', how='inner')
+
+# Tipo (how)
+# 'inner'(por defecto): únicamente las filas cuyos valores clave coinciden en ambos DataFrames.
+# 'left': todas las filas del df izquierdo y rellena con NaN lo que no coincida del derecho
+# 'right': todas las filas del df derecho y rellena con NaN lo que no coincida del izquierdo
+# 'outer': todas las filas de ambos DataFrames (Rellena con NaN donde falten coincidencias)
+
+# Nombres de columnas distintos
+pd.merge(df1, df2, left_on='id_usuario', right_on='user_id')
+
+# Columnas con el mismo nombre
+pd.merge(df1, df2, on='id', suffixes=('_cliente', '_empresa'))
+
+# Combinación por índices
+pd.merge(df1, df2, left_index=True, right_index=True)
+
 first_pupil_df = pd.DataFrame(
     {
         'author': ['Alcott', 'Fitzgerald', 'Steinbeck', 'Twain', 'Hemingway'],
@@ -686,71 +686,102 @@ second_pupil_df = pd.DataFrame(
 )
 
 both_pupils = first_pupil_df.merge(second_pupil_df, on='author')
-print(both_pupils)#aunque incluye todas las columnas  pero solo se conservan las filas con datos compartidos
-#si para una columna hay mas de un dato se hara un dato_x dato_y para poder asignar ambos al mismo nombre de columna
+print(both_pupils)
+# El resultado contiene únicamente los autores que coinciden en ambas listas
+# Añadiendo los sufijos _x e _y a la columna title para diferenciar los libros de cada alumno.
 
-both_pupils = first_pupil_df.merge(second_pupil_df, on='author', how='outer') #conservan todas las filas, donde no hay coincidencia  se pone valor ausente
+both_pupils = first_pupil_df.merge(second_pupil_df, on='author', how='outer')
 
 both_pupils = first_pupil_df.merge(second_pupil_df, on='author', how='left',suffixes=('_1st_student', '_2nd_student'))
-# todos los valores del DataFrame izquierdo están presentes en el DataFrame fusionado. Los valores del DataFrame derecho  solo se conservan para los valores que coinciden con la columna especificada en el izquierdo
 
 both_pupils = first_pupil_df.merge(second_pupil_df,
                                    left_on='authors',
                                    right_on='author'
                                   )
-print(both_pupils.drop('author', axis='columns')) #eliminar la información duplicada    
+print(both_pupils.drop('author', axis='columns')) # Eliminar columna duplicada  
 
 df_merged = df_members.merge(
     df_orders,
-    left_on='id', #si los combres de columnas son distintas en cada frame
+    left_on='id',
     right_on='user_id',
     how='inner',
     suffixes=('_member', '_order')
 )
-df_merged = df_merged.drop('user_id', axis='columns')
+df_merged = df_merged.drop('user_id', axis='columns') # Eliminar columna duplicada  
 print(df_merged)
 
 #------------Crear gráficas en Python con matplotlib---------------
-#------------Importacion de librerias ---------------
+# Importacion de libreias
 import pandas as pd
 from matplotlib import pyplot as plt
 
 #------------Método plot() y plt.show()---------------
 #plot():crear una gráfica en pandas
 #show():mostrar  una gráfica.
-df = pd.DataFrame({'a':[2, 3, 4, 5], 'b':[4, 9, 16, 25]})
+
+df = pd.DataFrame({'a':[2, 3, 4, 5], 'b':[4, 9, 16, 25]}) # Crear los datos
 df.plot()
 plt.show() #Los índices están en el eje X y los valores de las columnas están en el eje Y.
 
-df = pd.DataFrame({'a':[2, 3, 4, 5], 'b':[4, 9, 16, 25]}) #solo se grafica una columna
+df = pd.DataFrame({'a':[2, 3, 4, 5], 'b':[4, 9, 16, 25]}) # Solo se grafica una columna
 df['b'].plot()
 plt.show()
 
-plt.savefig('myplot.png') #guardar la grafica como imagen png, debes tener un archivo PNG como lo llamaste en cualquier parte donde este tu script
 
-df.plot(x='b', #elegir que columnas van en cada eje, los valores de las columnas se ponen en cada eje
+df.plot(x='b', # Elegir que columnas van en cada eje, los valores de las columnas se ponen en cada eje
         y='a',
-        title='A vs B', #dar titulo
-        style='o', #Cambiar el estilo de marcador del gráfico, se marcara con puntos, style='х' seran taches en lugar de puntos
-        color='hotpink', #cambiar el color de la linea
-        xlabel="Hola, soy B",#cambiar las etiquetas de los ejes
+        
+        title='A vs B', 
+        style='o', # Cambiar el estilo de marcador del gráfico, . , style='х' seran x
+        color='hotpink', # Cambiar el color de la linea
+        xlabel="Hola, soy B", # Cambiar las etiquetas de los ejes
         ylabel="Hola, soy A",
-        xlim=[0, 30], # Si pasas una lista de dos números, el primer número será el mínimo y el segundo será el máximo.
-        ylim=0, #Si pasas un  número, será el valor mínimo. 
-        grid=True, #agregar una cuadrícula al gráfico
-        figsize=[10, 4], #tamaño en pulgadas de la grafica
-        legend=True #mostrar la leyenda
+        
+        xlim=[0, 30], #Lista del mínimo y máximo de valores en eses.
+        # ylim=0, # Si pasas solo un número, será el valor mínimo. 
+        grid=True, # Agregar una cuadrícula al gráfico
+        figsize=[10, 4], # Tamaño en pulgadas de la grafica
+        legend=True # Mostrar la leyenda
         ) 
 
-#este grafico no es de linea sino q se marcan las coordenadas
-df.plot(style='o-') #mostrar tanto líneas como puntos
+# Tipos de iconos
 #https://matplotlib.org/stable/api/markers_api.html
 
-plt.xlabel("Hola, soy B") # configurando la leyenda x, otra forma
-plt.ylabel("Hola, so A") # configurando la leyenda y
+plt.xlabel("Hola, soy B") # Configurando la leyenda x, otra forma
+plt.ylabel("Hola, so A") # Configurando la leyenda y
 
 #------------Graficos de dispercion---------------
+
+# Cargar datos
 df = pd.read_csv('/datasets/height_weight.csv')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 df.sort_values('height').plot(
     x='height',
