@@ -755,40 +755,13 @@ plt.ylabel("Hola, so A") # Configurando la leyenda y
 # Cargar datos
 df = pd.read_csv('/datasets/height_weight.csv')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 df.sort_values('height').plot(
     x='height',
     y='weight', 
-    kind="scatter", #qué tipo de gráfico crear. 'En este caso, 'scatter' 'para un gráfico de dispersión.
-    alpha=0.5 #transparencia de los puntos
+    kind="scatter", # Tipo de grafico: gráfico de dispersión.
+    alpha=0.5 # Transparencia de los puntos
     )
+
 
 df.plot(kind="scatter", 
         x='age',
@@ -801,33 +774,44 @@ df.plot(kind="scatter",
 plt.show()
 
 #------------Calcular el coeficiente de correlación---------------
-#aplícalo a la columna con la primera variable, y pasa la columna con la segunda variable como un parámetro. No importa el orden de las variables.
+# Indice numérico que cuantifica la fuerza y la dirección de la relación entre dos variables cuantitativas.
+# Permite identificar rápidamente qué variables se mueven juntas dentro de un conjunto de datos.
+
+# Valor del coeficiente (r) - Tipo de correlación
+#         +1.0                  Positiva perfecta
+#         +0.7 a +0.9           Positiva fuerte
+#         0.0                   Sin correlación lineal
+#         −0.7 a −0.9           Negativa fuerte
+#         −1.0                  Negativa perfecta
+
+# Calcular la matriz de correlación de Pearson para todas las columnas numéricas
+matriz_correlacion = df.corr(method='pearson')
+print(df.corr()) 
+
+# Extraer los coeficientes de 'male' con las otras columnas
+male_corr = matriz_correlacion.loc['male', ['height', 'weight', 'age']]
+print(male_corr)
+
+
+# Calcular la correlación específica entre dos variables. No importa el orden de las variables.
+r = df['variable_X'].corr(df['variable_Y'])
 print(df['height'].corr(df['weight'])) 
-print(df.corr()) #tabla con todas las correlaciones entre todas las variables
 
 #------------Matrices de dispercion--------------
-#gráficos de dispersión para cada posible par de parámetros:
-#las celdas diagonales son histogramas que muestran la distribución de valores para cada variable individual
+# Las celdas diagonales son histogramas que muestran la distribución de valores para cada variable individual
 pd.plotting.scatter_matrix(df, figsize=(9, 9))
 plt.show()
 
-#------------Matrices de correlacion--------------
-print(df.corr())
-
-corr_mat = df.corr()
-# Extraer los coeficientes de 'male' con las otras columnas
-male_corr = corr_mat.loc['male', ['height', 'weight', 'age']]
-print(male_corr)
-
 #------------Gráficos de barras-------------
-#nos permitirán comparar propiedades numéricas entre categorías
+# Comparar propiedades numéricas entre categorías
+
 df.plot(x='year',
         kind='bar',
         title='West coast USA population growth',
         xlabel='Year',
         ylabel='Population (millions)')
 plt.legend(['CA', 'OR', 'WA'])
-#Si no especificas el parámetro y=, se creará automáticamente una barra para cada columna en el DF que no esté en X
+# Si no especificas el parámetro y=, se creará automáticamente una barra para cada columna en el DF que no esté en X
 plt.show()
 
 cols = ['or_pop', 'wa_pop']
@@ -843,31 +827,40 @@ plt.legend(['OR', 'WA'])
 plt.bar(x, y)
 
 #Barras horizontales (.barh()):
-plt.barh(y, x)  # Nota que se invierten los parámetros
+plt.barh(y, x)  # Se invierten los parámetros
 
 #------------Histogramas-------------
-#el eje X representa la variable y su rango de valores. El eje Y representa la frecuencia de ocurrencia para cada valor.
-df = pd.read_csv('/datasets/height_weight.csv')
-df.hist(#primera forma, por defecto hace un histograma para cada columna
-    column='height', #pedir especificamente una
-    bins=30 #numero de contenedores
-    ) 
-df['height'].hist() #segunda forma
+# El eje X representa la variable y su rango de valores. 
+# El eje Y representa la frecuencia de ocurrencia para cada valor.
 
+# Primer forma
 df = pd.read_csv('/datasets/height_weight.csv')
-df.plot(kind='hist') #tercera forma
+df.hist(# Por defecto hace un histograma para cada columna
+    column='height',
+    bins=30 # Numero de contenedores
+) 
+
+# Segunda forma
+df['height'].hist() 
+
+# Tercera forma
+df = pd.read_csv('/datasets/height_weight.csv')
+df.plot(kind='hist') 
 df['height'].plot(kind='hist', bins=30)
 
-df[df['male'] == 1]['height'].plot(kind='hist', bins=30) #juntando dos histogramas en una misma grafica
+# Unir dos histogramas en una misma grafica
+df[df['male'] == 1]['height'].plot(kind='hist', bins=30) 
 df[df['male'] == 0]['height'].plot(kind='hist', bins=30, alpha=0.8)
-plt.legend(['Male', 'Female']) # leyenda, que sigue el mismo orden trazado anteriormente
+plt.legend(['Male', 'Female']) # Sigue el mismo orden trazado anteriormente
 plt.show()
+
 
 df = df.sort_values('male').reset_index(drop=True)
 df = df[df.index < 5000]
 df.hist(column='height', bins=50) 
 plt.show()
 
+# Unir mas de 2 histogramas
 df_20s = df[df['age'] < 30]
 df_30s = df[(df['age'] >= 30) & (df['age'] < 40)]
 df_40s = df[df['age'] >= 40]
@@ -877,5 +870,7 @@ df_40s['weight'].plot(kind='hist', bins=20, alpha=0.3)
 plt.legend(['20s', '30s', '40s'])
 plt.show()
 
-
-
+data.hist(
+    bins=[11, 20, 30, 40, 50, 60, 70, 80, 90, 99], alpha=0.7 
+    # Definir los contenedores de forma personalizada.
+)

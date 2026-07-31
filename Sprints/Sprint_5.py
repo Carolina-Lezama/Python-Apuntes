@@ -1,21 +1,15 @@
-data.hist(bins=4, alpha=0.5)  # crea un histograma con cuatro contenedores
-
-data.hist(
-    bins=[11, 20, 30, 40, 50, 60, 70, 80, 90, 99], alpha=0.7 
-    #al usar bins con listas, se definen los contenedores de forma personalizada, donde ira cada uno para visualizar mejor todos los datos
-#de 11 a 20, de 20 a 30, etc
-)
-
-data = pd.Series([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-print('La media es igual a', data.mean())
-print('La mediana es igual a', data.median())
-
 #------------Importacion de libreria----------------
 import seaborn as sns
 
 #------------Diagrama de caja----------------
+# Resumir la distribución de una variable numérica a través de sus cuartiles
+
 dataset = pd.Series([1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 5, 5, 6, 6])
 sns.boxplot(dataset)
+
+# Diferencia entre varianza y covarianza
+# La varianza mide la dispersión de una sola variable respecto a su propia media
+# La covarianza mide cómo cambian o varían dos variables distintas en conjunto.
 
 #------------Varianza----------------
 data = pd.Series([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -28,6 +22,10 @@ y = [41, 62, 89, 96, 108, 115] # dataset 2
 covariance_matrix = np.cov(x,y) # calculamos la matriz de covarianza
 covariance = covariance_matrix[0][1] # extraemos la covarianza como valor
 print(covariance)
+
+
+
+
 
 #------------Desviacion estandar----------------
 s = pd.Series([1, 2, 3, 4, 5, 6])
