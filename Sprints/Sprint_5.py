@@ -1,5 +1,7 @@
 #------------Importacion de libreria----------------
 import seaborn as sns
+from scipy import stats as st
+import math as mt
 
 #------------Diagrama de caja----------------
 # Resumir la distribución de una variable numérica a través de sus cuartiles
@@ -23,32 +25,36 @@ covariance_matrix = np.cov(x,y) # calculamos la matriz de covarianza
 covariance = covariance_matrix[0][1] # extraemos la covarianza como valor
 print(covariance)
 
-
-
-
-
 #------------Desviacion estandar----------------
 s = pd.Series([1, 2, 3, 4, 5, 6])
 s.describe()
 
-x = [1, 2, 3, 4, 5, 6] # dataset
+x = [1, 2, 3, 4, 5, 6]
 standard_deviation = np.std(x)
 print(standard_deviation)
 
-variance = 3.5 #si ya conoces la varianza de un dataset
-standard_deviation = np.sqrt(variance)
-print(standard_deviation)
+# La diferencia fundamental entre la varianza y la desviación estándar radica en la unidad de medida y la interpretabilidad.
+# Ambas miden la dispersión o variabilidad de un conjunto de datos respecto a su media, pero expresan esa variación en escalas distintas.
+
+# Varianza: Promedio de las desviaciones individuales al cuadrado respecto a la media.
+# Desviación Estándar: Raíz cuadrada de la varianza.
 
 #------------Distribucion normal  o de gauss, regla de las 3 sigmas----------------
-#los datos situados cerca de la media aparecen con más frecuencia
-#La desviación estándar, que determina la dispersión con respecto a la media.
-#una desviación estándar menor (en comparación con la media) hace que el gráfico sea más empinado
-#(μ−3σ,μ+3σ); µ es la media y σ es la desviación estándar; limite inferior y superior
+
+# Los datos situados cerca de la media aparecen con más frecuencia
+# La desviación estándar, que determina la dispersión con respecto a la media.
+# Una desviación estándar menor hace que el gráfico sea más empinado
+# (μ−3σ,μ+3σ); µ es la media y σ es la desviación estándar; limite inferior y superior
+
+# Cálculo de un umbral máximo de tiempo (adv_time)
+    # calcular un límite superior esperable
 adv_mean = 3
 adv_var = 0.25
 adv_std = np.sqrt(adv_var)
 adv_time = adv_mean + 3 * adv_std
 
+# Cálculo de probabilidades de visitantes (st.norm.cdf)
+    # Analiza la probabilidad de tener eventos extremos, limite superior e inferior
 mu = 100500
 sigma = 3500
 more_threshold = 111000
@@ -76,59 +82,63 @@ quiz_bottom_line = quiz_mean - 3 * quiz_std
 quiz_top_line = quiz_mean + 3 * quiz_std
 print('Intervalo:', quiz_bottom_line, '-', quiz_top_line) 
 
-# importamos las librerías necesarias
-from scipy import stats as st
-import math as mt
-# establecemos los valores de los parámetros
+
+# Establecemos los valores de los parámetros
 binom_n = 5000
 binom_p = 0.15
 clicks = 715
+
 # calculamos el valor esperado de éxitos y sigma
+# (Mu) — La Media poblacional o el promedio aritmético
+# (Sigma) — La Desviación Estándar poblacional
+
 mu = binom_n * binom_p
 sigma = mt.sqrt(binom_n * binom_p * (1 - binom_p))
+
 # calculamos la probabilidad de obtener 715 visitas o menos
 p_clicks = st.norm(mu, sigma).cdf(clicks)
 print(p_clicks)
 
-#------------FUNCIONES EN PANDAS BASE----------------
-
-
-#Una distribución de datos en la que la mayor parte de los valores se encuentran a la derecha se denomina sesgo a la derecha(asimetría positiva.)
-
+# Una distribución de datos en la que la mayor parte de los valores se encuentran a la derecha se denomina sesgo a la derecha(asimetría positiva.)
 
 #------------Valor atipico----------------
-#si está a más de 1.5 veces el rango intercuartílico (IQR) de alguno de los cuartiles Q1 o Q3,  IQR es Q3 - Q1
-
-
-
-#------------Dataframes sesgados----------------
-#los datasets sesgados a la derecha, la media es mayor que la mediana, y viceversa
-
+# si está a más de 1.5 veces el rango intercuartílico (IQR) de alguno de los cuartiles Q1 o Q3
 
 #--------------Probabilidad de evento--------------
-#P para denotar probabilidad y la letra A para denotar un evento 
+# P para denotar probabilidad y la letra A para denotar un evento 
 # P(A) = número de resultados favorables / número total de resultados posibles
-#espacio muestral = conjunto de todos los resultados posibles de un experimento, denotado con S.
+# espacio muestral = conjunto de todos los resultados posibles de un experimento, denotado con S.
 
 print(
-    len(cool_rock[cool_rock['Song'] == 'Smells Like Teen Spirit']) #cuantas veces esta sobre cuantos hay en total
+    len(cool_rock[cool_rock['Song'] == 'Smells Like Teen Spirit']) # Cuantas veces esta sobre cuantos hay en total
     / len(cool_rock)
 )
 
-
-
-
-P(A) = 1/6 y P(B) = 1/6. Siguiendo la fórmula que te hemos proporcionado, podemos calcular P(A and B) = 1/6 x 1/6 = 1/36.
-La probabilidad de que uno de los usuarios aleatorios sea hombre es 0.29. La probabilidad de que el otro usuario aleatorio no haya indicado su género es (1 - 0.29 - 0.25) = 0.46. Estos son eventos independientes. Esto significa que la probabilidad de que ocurran ambos eventos es 0.46 * 0.29 = 0.1334, o 13.34%.
-La probabilidad de elegir una de las 4 secciones posibles es 1/4. La probabilidad de elegir una de las 3 subsecciones posibles es 1/3. La probabilidad de elegir una de las 5 páginas web que nos interesan del total de 9 páginas web en la subsección es 5/9. Respuesta: 1/4 * 1/3 * 5/9 = 5/108 ≈ 0.046296 ≈ 4.63%
-
 #------------Distribuccion normal----------------
-#tiene dos parámetros clave: la media y la varianza
-#los datos se distribuyen simétricamente alrededor de la media
+# Tiene dos parámetros clave: la media y la varianza
+# Los datos se distribuyen simétricamente alrededor de la media
 
 
-#------------Importar libreria----------------
-from scipy import stats as st
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #------------La función de distribución acumulativa----------------
 #Da la probabilidad de que una variable aleatoria sea menor o igual que un valor determinado
@@ -233,40 +243,6 @@ for score in exam_results:
         summarized_data['failed'] += 1
 for result in summarized_data:
     print(result, '-', summarized_data[result])
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 
 #------------Muestras aleatorias y medias muestrales---------------
