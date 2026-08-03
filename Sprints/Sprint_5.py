@@ -2,6 +2,9 @@
 import seaborn as sns
 from scipy import stats as st
 import math as mt
+from math import factorial
+import numpy as np
+import pandas as pd
 
 #------------Diagrama de caja----------------
 # Resumir la distribución de una variable numérica a través de sus cuartiles
@@ -118,81 +121,70 @@ print(
 # Tiene dos parámetros clave: la media y la varianza
 # Los datos se distribuyen simétricamente alrededor de la media
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #------------La función de distribución acumulativa----------------
-#Da la probabilidad de que una variable aleatoria sea menor o igual que un valor determinado
-#¿Cuál es la probabilidad de que un estudiante pueda aprender una nueva profesión por menos de 4 000 dólares?
-#norm.cdf()
+
+# Da la probabilidad de que una variable aleatoria sea menor o igual que un valor determinado
+# ¿Cuál es la probabilidad de que un estudiante pueda aprender una nueva profesión por menos de 4 000 dólares?
+
+# norm.cdf()
 
 data = st.norm(5000, 1500) # media de 5 000 y una desviación estándar de 1500.
-desired_cost = 4000# el coste deseado.
-probability = data.cdf(desired_cost)# calculamos la probabilidad de obtener el valor desired_cost.
+desired_cost = 4000 # el coste deseado.
+probability = data.cdf(desired_cost) # calculamos la probabilidad de obtener el valor desired_cost.
 
-from scipy import stats as st
-import math as mt
 
-binom_n = 23000 #total de pruebas
-binom_p = 0.4 #probabilidad de que ocurra
+binom_n = 23000 # Total de pruebas
+binom_p = 0.4 # Probabilidad de que ocurra
 
-threshold = 9000 #media de que ocurrra
+threshold = 9000 # Media de que ocurrra
 
 mu = binom_n * binom_p #media
-sigma = mt.sqrt(binom_n * binom_p * (1 - binom_p)) #desviacion estandar
+sigma = mt.sqrt(binom_n * binom_p * (1 - binom_p)) # Desviacion estandar
 
 p_threshold = 1 - st.norm(mu, sigma).cdf(threshold) #1 es el total 
 print(p_threshold)
 
-#------------La función de punto porcentual----------------
-#Da el valor de la variable aleatoria que corresponde a una determinada probabilidad	
-#¿Cuál es el coste máximo de la formación para el 10% de los estudiantes que gastaron menos dinero en sus estudios?
-#norm.ppf()	
+#------------ La función de punto porcentual----------------
+# Da el valor de la variable aleatoria que corresponde a una determinada probabilidad	
+# ¿Cuál es el coste máximo de la formación para el 10% de los estudiantes que gastaron menos dinero en sus estudios?
+
+# norm.ppf()	
 
 data = st.norm(5000, 1500)
-target_level = 0.1 # para el 10% de los estudiantes que gastaron menos dinero.
-cost = data.ppf(target_level)# encontramos el importe que no supere los gastos del 10% de estudiantes que gastaron menos dinero.
+target_level = 0.1 # 10% de los estudiantes que gastaron menos dinero.
+cost = data.ppf(target_level) # Encontramos el importe que no supere los gastos del 10% de estudiantes que gastaron menos dinero.
 
-#La puntuación media en el examen del Certificado de análisis de datos es 1000 y la desviación estándar es 100. Hay que encontrar la probabilidad de obtener entre 900 y 1 100 puntos en el examen.
+
+# La puntuación media del examen es 1000 y la desviación estándar es 100. 
+# Hay que encontrar la probabilidad de obtener entre 900 y 1 100 puntos en el examen.
+
 st.norm(1000, 100).cdf(1100) - st.norm(1000, 100).cdf(900)
-#calcular la probabilidad de que el valor que buscamos sea inferior a 1 100 y restarle la probabilidad de que sea inferior a 900
+
+# calcular la probabilidad de que el valor que buscamos sea inferior a 1 100 y restarle la probabilidad de que sea inferior a 900
 
 #------------PERMUTACIONES----------------
-#número de permutaciones de n objetos es n! ; n!=1⋅2⋅3⋅...⋅(n−1)⋅n
+
+#  sirve para ordenar objetos, donde el orden de las cosas sí importa y no se repiten
+# Cada combinacion es nueva y diferente, sin repetir
+
+# número de permutaciones de n objetos es: n! ; n!=1⋅2⋅3⋅...⋅(n−1)⋅n
 courses_amount = 5
 result = factorial(courses_amount)
 
-#------------Libreria matematicas----------------
-from math import factorial
-
 #------------Combinaciones----------------
-#resultado = n!/k!(n−k)!; 10!/3!⋅(10−3)!
+# resultado = n!/k!(n−k)!; 10!/3!⋅(10−3)!
 n = 10
 k = 3
 combinations = factorial(n) / (factorial(k) * factorial(n-k))
 
-#------------Distribucion binomial; tambien calcular numero de exito en numero de pruebas----------------
-#hay dos resultados posibles; éxito es p, e fracaso = (1-p), pruebas independientes entre si
-#P=p**k * q **(n-k)
+#------------ Distribucion binomial (calcular numero de exito en numero de pruebas)----------------
+
+# calcular la probabilidad de obtener un número determinado de éxitos en un número fijo de pruebas
+    # número fijo de ensayos
+    # los resultados binarios
+    # la independencia entre pruebas
+
+# P=p**k * q **(n-k)
 # p es la probabilidad de éxito. q es la probabilidad de fracaso. k es el número de pruebas realizadas con éxito. n es el número total de pruebas.
 p = 0.6
 q = 0.4
@@ -202,20 +194,23 @@ probability = factorial(n) / (factorial(k) * factorial(n-k)) * (p ** k) * (q ** 
 print(probability)
 
 #------------Array en numpy----------------
-#ndarray = el tamaño se determina en la creación y no puede modificarse durante la ejecución
+# ndarray = Inmutable una vez creado
 data = np.array([1, 3, 5, 7, 11, 13, 17, 19, 23, 317])
 print('El primer elemento:', data[0])
 print('El último elemento:', data[-1])
 
-data = np.random.normal(size = 20) #array de 20 números que sigan una distribución normal
+# Arreglo con 20 números aleatorios
+data = np.random.normal(size = 20) 
 print(data)
 
+# . The numbers follow a normal distribution, centered around a mean of 15 with a standard deviation of 5.
 mean = 15
 std_dev = 5
-data = np.random.normal(mean, std_dev, size = 20) #array con una media y una desviación estándar dadas
+data = np.random.normal(mean, std_dev, size = 20) 
 print(data)
 
 #------------Agrupando segun valores----------------
+
 failed_students = 0
 for score in exam_results:
     if score < 20:
@@ -229,7 +224,9 @@ exam_results = np.array(
         34,  47,  64,  58,  61,  12,  30,  63,  20,  68
     ]
 )
+
 summarized_data = {'excellent': 0, 'good': 0, 'average': 0, 'passable': 0, 'failed': 0}
+
 for score in exam_results:
     if score >= 90:
         summarized_data['excellent'] += 1
@@ -241,27 +238,58 @@ for score in exam_results:
         summarized_data['passable'] += 1
     else:
         summarized_data['failed'] += 1
+
 for result in summarized_data:
-    print(result, '-', summarized_data[result])
-    
+    print(result, '-', summarized_data[result])   
 
 #------------Muestras aleatorias y medias muestrales---------------
-#la distribución muestral de la media muestral es el conjunto de valores medios de todas las muestras posibles de un cierto tamaño tomadas de una población estadística particular
-#Cuanto mayor sea, menor será la desviación estándar de la media de la muestra
-#Cuanto mayor sea la muestra que tomemos, más precisa será la media
 
-#La desviación estándar de la media de la muestra del promedio de la población estadística se llama error estándar (s/root(n)); s desviacion estandar, n tamaño de la muestra
+# Media muestral de la distribución muestral: Conjunto de valores medios de todas las muestras posibles de un cierto tamaño tomadas de una población estadística particular
+
+# Cuanto mayor sea, menor será la desviación estándar de la media de la muestra
+# Cuanto mayor sea la muestra que tomemos, más precisa será la media
+
+# Error estándar (s/root(n)); s desviacion estandar, n tamaño de la muestra: desviacion estandar de la media, respecto a la muestra promedio poblacional
 
 #------------Formular hipótesis de dos colas---------------
-#En estadística, H₀ suele expresar que no hay diferencias entre grupos. Esta hipótesis nula supone que no hay ningún cambio hasta que se demuestre lo contrario
-#La hipótesis alternativa, H₁,contradice la hipótesis nula. Afirma que hay una diferencia entre los grupos
+# En estadística, H₀ suele expresar que no hay diferencias entre grupos. 
+# Esta hipótesis nula supone que no hay ningún cambio hasta que se demuestre lo contrario.
+
+# La hipótesis alternativa, H₁, contradice la hipótesis nula.
+# Afirma que hay una diferencia entre los grupos
 
 #------------Prueba de hipótesis en Python. Valores p---------------
-#estadística de diferencia entre la media y el valor con el que lo estás comparando
-#Si este valor es superior al 10%, definitivamente no debes rechazar la hipótesis nula. Si el valor p es más bajo, es posible que debas rechazar la hipótesis nula. Los valores de umbral convencionales son 5% y 1%.
-from scipy import stats as st
-import numpy as np
-import pandas as pd
+# Estadística de diferencia entre la media y el valor con el que lo estás comparando
+
+# Si este valor es superior al 10%, definitivamente no debes rechazar la hipótesis nula. 
+# Si el valor p es más bajo, es posible que debas rechazar la hipótesis nula. 
+
+# Los valores de umbral convencionales son 5% y 1%.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 time_on_site = pd.read_csv('user_time.csv')
 interested_value = 120 # tiempo transcurrido en el sitio web
 alpha = .05 # la significancia estadística crítica (umbral)
