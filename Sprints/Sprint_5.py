@@ -266,93 +266,88 @@ for result in summarized_data:
 
 # Los valores de umbral convencionales son 5% y 1%.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Leer datos
 time_on_site = pd.read_csv('user_time.csv')
+
 interested_value = 120 # tiempo transcurrido en el sitio web
-alpha = .05 # la significancia estadística crítica (umbral)
-results = st.ttest_1samp(# realizar una prueba, esta es la funcion
+alpha = .05 # umbral
+
+results = st.ttest_1samp(
     time_on_site, 
-    interested_value)
-print('valor p: ', results.pvalue)# imprimir el valor p resultante
-if (results.pvalue < alpha):# comparar el valor p con el umbral
-    print("Rechazamos la hipótesis nula") #no se pasan 130 minutos en el sitio web
+    interested_value
+)
+
+print('valor p: ', results.pvalue) # Imprimir el valor p resultante
+if (results.pvalue < alpha): # Comprobacion
+    print("Rechazamos la hipótesis nula") # resultado diferente de interested_value
 else:
-    print("No podemos rechazar la hipótesis nula") #se pasan 120 minutos en el sitio web
+    print("No podemos rechazar la hipótesis nula") # el interested_value tiene razon
 
 #Si la probabilidad es relativamente alta, los datos no nos dan motivos para rechazar una suposición.
 #Si la probabilidad es baja, entonces a partir de los datos proporcionados podemos concluir que nuestra suposición probablemente fue incorrecta (pero no podemos rechazarla o probar lo contrario).
 
 #------------Formular hipótesis de una cola---------------
-#python por defecto hace hipotesis de dos colas, si quieres una unilateral, divide el valor p entre dos
-from scipy import stats as st
-import pandas as pd
-screens = pd.Series([4, 2, 4, 5, 5, 4, 2, 3, 3, 5, 2, 5, 2, 2, 2, 3, 3, 4, 8, 3, 4, 3, 5, 5, 4, 2, 5, 2, 3, 7, 5, 5, 6,  5, 3, 4, 3, 6, 3, 4, 4, 3, 5, 4, 4, 8, 4, 7, 4, 5, 5, 3, 4, 6, 7, 2, 3, 6, 5, 6, 4, 4, 3, 4, 6, 4, 4, 6, 2, 6, 5, 3, 3, 3, 4, 5, 3, 5, 5, 4, 3, 3, 3, 1, 5, 4, 3, 4, 6, 3, 1, 3, 2, 7, 3, 6, 6, 6, 5, 5])
-prev_screens_value = 4.867 # número promedio de bloques vistos
+# python por defecto hace hipotesis de dos colas, 
+# para una unilateral: divide el valor p entre dos
+
+screens = pd.Series([
+    4, 2, 4, 5, 5, 4, 2, 3, 3, 5, 2, 5, 2, 2, 2, 3, 3, 4, 8, 3, 4, 3, 5, 5, 4, 2, 5, 2, 
+    3, 7, 5, 5, 6,  5, 3, 4, 3, 6, 3, 4, 4, 3, 5, 4, 4, 8, 4, 7, 4, 5, 5, 3, 4, 6, 7, 2,
+    3, 6, 5, 6, 4, 4, 3, 4, 6, 4, 4, 6, 2, 6, 5, 3, 3, 3, 4, 5, 3, 5, 5, 4, 3, 3, 3, 1, 
+    5, 4, 3, 4, 6, 3, 1, 3, 2, 7, 3, 6, 6, 6, 5, 5
+    ])
+
+prev_screens_value = 4.867 # promedio contra el cual hacer la hipotesis
 alpha = 0.05  # nivel de significación
 results = st.ttest_1samp(screens, prev_screens_value)
-print('valor-p: ', results.pvalue / 2)# prueba unilateral: el valor p se divide en dos
-# prueba unilateral a la izquierda:
+
+print('valor-p: ', results.pvalue / 2) 
+
+# prueba unilateral a la izquiera:
+
 # rechaza la hipótesis solo si la media muestral es significativamente menor que el valor propuesto
-if (results.pvalue / 2 < alpha) and (screens.mean() < prev_screens_value):#comparamos el valor p con el umbral y la media muestral con el valor propuesto
+if (results.pvalue / 2 < alpha) and (screens.mean() < prev_screens_value): # Comparamos el valor p con el umbral y la media muestral con el valor propuesto
     print("Rechazamos la hipótesis nula")
 else:
     print("No podemos rechazar la hipótesis nula")
 
-#Si la prueba fuera unilateral a la derecha con la hipótesis alternativa “El valor observado es mayor que el predicho”, uno de los signos “<” cambiaría a “>”. Las últimas líneas de código se verían así:
+#Si la prueba fuera unilateral a la derecha con la hipótesis alternativa:
+# “El valor observado es mayor que el predicho”, uno de los signos “<” cambiaría a “>”. 
+# Las últimas líneas de código se verían así:
+
 if (results.pvalue / 2 < alpha) and (screens.mean() > prev_screens_value):
     print("Rechazamos la hipótesis nula")
 else:
     print("No podemos rechazar la hipótesis nula")
 
-from scipy import stats as st
-import numpy as np
-import pandas as pd
+
 revenue = pd.Series([727, 678, 685, 669, 661, 705, 701, 717, 
                      655,643, 660, 709, 701, 681, 716, 655, 
                      716, 695, 684, 687, 669,647, 721, 681, 
                      674, 641, 704, 717, 656, 725, 684, 665])
+
 interested_value = 800
 alpha = 0.05
 results = st.ttest_1samp(revenue, interested_value)
+
 print('valor p:', results.pvalue / 2)
+
 if (results.pvalue / 2 < alpha) and (revenue.mean() < interested_value):
     print(
         "Rechazamos la hipótesis nula: los ingresos fueron significativamente inferiores a 800 dólares"
-    )
+)
 else:
     print(
         "No podemos rechazar la hipótesis nula: los ingresos no fueron significativamente inferiores"
-    )
+)
 
 #------------Hipótesis sobre la igualdad de las medias de dos poblaciones---------------
-#Dos muestras independientes
-#equal_var: varianza igual es un parámetro opcional que especifica si las varianzas de las poblaciones deben considerarse iguales, True o False
-#True y la varianza de cada muestra se estimará a partir del dataset combinado de las dos muestras
-from scipy import stats as st
-import numpy as np
+
+# Dos muestras independientes
+
+# equal_var: Parámetro opcional que especifica si las varianzas de las poblaciones deben considerarse iguales (True o False)
+# True y la varianza de cada muestra se estimará a partir del dataset combinado de las dos muestras
+
 sample_1 = [3071, 3636, 3454, 3151, 2185, 3259, 1727, 2263, 2015, 
             2582, 4815, 633, 3186, 887, 2028, 3589, 2564, 1422, 1785, 
             3180, 1770, 2716, 2546, 1848, 4644, 3134, 475, 2686, 
@@ -361,17 +356,17 @@ sample_2 = [1211, 1228, 2157, 3699, 600, 1898, 1688, 1420, 5048, 3007,
             509, 3777, 5583, 3949, 121, 1674, 4300, 1338, 3066, 
             3562, 1010, 2311, 462, 863, 2021, 528, 1849, 255, 
             1740, 2596]
-alpha = 0.05  # el nivel de significancia estadística crítica
+
+alpha = 0.05  
 results = st.ttest_ind(sample_1, sample_2) # si el valor p es menor que alpha, rechazamos la hipótesis
+
 print('valor p: ', results.pvalue) 
-if results.pvalue < alpha: # comparar el valor p con el umbral
+if results.pvalue < alpha: 
     print("Rechazamos la hipótesis nula")
 else:
     print("No podemos rechazar la hipótesis nula")
 
 
-from scipy import stats as st
-import numpy as np
 # tiempo pasado en el sitio web por usuarios con un nombre de usuario y contraseña
 time_on_site_logpass = [368, 113, 328, 447, 1, 156, 335, 233, 
                        308, 181, 271, 239, 411, 293, 303, 
@@ -383,8 +378,10 @@ time_on_site_social  = [451, 182, 469, 546, 396, 630, 206,
                         721, 350, 347, 446, 406, 365, 203, 
                         405, 631, 545, 584, 248, 171, 309, 
                         338, 505]
+
 alpha = .05
 results = st.ttest_ind(time_on_site_logpass, time_on_site_social)
+
 print('valor p:', results.pvalue)
 if (results.pvalue < alpha):
     print("Rechazamos la hipótesis nula")
@@ -392,8 +389,6 @@ else:
     print("No podemos rechazar la hipótesis nula")
 
 
-from scipy import stats as st
-import numpy as np
 pages_per_session_autumn = [7.1, 7.3, 9.8, 7.3, 6.4, 10.5, 8.7, 
                             17.5, 3.3, 15.5, 16.2, 0.4, 8.3, 
                             8.1, 3.0, 6.1, 4.4, 18.8, 14.7, 16.4, 
@@ -404,8 +399,10 @@ pages_per_session_summer = [12.1, 24.3, 6.4, 19.9, 19.7, 12.5, 17.6,
                             2.5, 19.8, 4.8, 29.0, 1.7, 28.6, 16.7, 
                             14.2, 10.6, 18.2, 14.7, 23.8, 15.9, 16.2, 
                             12.1, 14.5]
+
 alpha = .05
 results = st.ttest_ind(pages_per_session_autumn, pages_per_session_summer, equal_var=False)
+
 print('valor p:', results.pvalue)
 if (results.pvalue < alpha):
     print("Rechazamos la hipótesis nula")
@@ -413,71 +410,81 @@ else:
     print("No podemos rechazar la hipótesis nula")
 
 #-----------Que es la varianza?---------------
-#La varianza mide qué tan dispersos o separados están los datos de su promedio. 
+
+# La varianza mide qué tan dispersos o separados están los datos de su promedio. 
+
 # Grupo A: 8, 8, 8, 8, 8 (promedio = 8) Varianza baja (todos muy similares)
 # Grupo B: 2, 6, 8, 12, 12 (promedio = 8) Varianza alta (muy dispersos)
 
 # Puedes calcularla así:
-import numpy as np
 varianza_logpass = np.var(time_on_site_logpass)
 varianza_social = np.var(time_on_site_social)
 
 #-----------Hipótesis sobre la igualdad de las medias de muestras emparejadas---------------
-#Dos muestras relacionadas/pareadas
-#muestras emparejadas, lo que significa que medimos una variable dos veces para cada cliente, antes y después de los cambios.
-from scipy import stats as st
-import numpy as np
-before = [157, 114, 152, 355, 155, 513, 299, 268, 164, 320, #deben tener el mismo tamaño
+
+# Dos muestras relacionadas/pareadas
+# Significa que medimos una variable dos veces para cada cliente, antes y después de los cambios.
+# Deben tener el mismo tamaño
+
+before = [157, 114, 152, 355, 155, 513, 299, 268, 164, 320, 
                     192, 262, 506, 240, 364, 179, 246, 427, 187, 431, 
                     320, 193, 313, 347, 312, 92, 177, 225, 242, 312]
 after = [282, 220, 162, 226, 296, 479, 248, 322, 298, 418, 
                  552, 246, 251, 404, 368, 484, 358, 264, 359, 410, 
                  382, 350, 406, 416, 438, 364, 283, 314, 420, 218]
-alpha = 0.05  # el nivel de significancia estadística crítica
+
+alpha = 0.05  
 results = st.ttest_rel(before, after)
 print('valor p: ', results.pvalue)
-if results.pvalue < alpha:
-    print("Rechazamos la hipótesis nula") #ha habido un cambio 
-else:
-    print("No podemos rechazar la hipótesis nula") #no ha habido un cambio
 
-#Seleccionamos una prueba unilateral debido a la palabra "más". Si no sabemos la dirección del cambio, entonces utilizaremos la prueba bilateral.
-from scipy import stats as st
-import numpy as np
-import pandas as pd
+if results.pvalue < alpha:
+    print("Rechazamos la hipótesis nula") # ha habido un cambio 
+else:
+    print("No podemos rechazar la hipótesis nula") # no ha habido un cambio
+
+
+# Seleccionamos una prueba unilateral debido a la palabra "más". 
+# Si no sabemos la dirección del cambio, entonces utilizaremos la prueba bilateral.
+
 bullets_before = [821, 1164, 598, 854, 455, 1220, 161, 1400, 479, 215, 
           564, 159, 920, 173, 276, 444, 273, 711, 291, 880, 
           892, 712, 16, 476, 498, 9, 1251, 938, 389, 513]
 bullets_after = [904, 220, 676, 459, 299, 659, 1698, 1120, 514, 1086, 1499, 
          1262, 829, 476, 1149, 996, 1247, 1117, 1324, 532, 1458, 898, 
          1837, 455, 1667, 898, 474, 558, 639, 1012]
+
 print('media anterior:', pd.Series(bullets_before).mean())
 print('media posterior:', pd.Series(bullets_after).mean())
+
 alpha = 0.05
 results = st.ttest_rel(
     bullets_before, 
     bullets_after)
 print('valor-p:', results.pvalue/2)
+
 if results.pvalue/2 < alpha:
     print("Rechazamos la hipótesis nula")
 else:
     print("No podemos rechazar la hipótesis nula")
 
 #-----------Muestreo estratificado---------------
-#una técnica de muestreo donde dividimos la población en grupos más pequeños llamados estratos (que comparten características similares), y luego tomamos muestras aleatorias de cada estrato.
+# una técnica de muestreo donde dividimos la población en grupos más pequeños llamados estratos (que comparten características similares)
+# luego tomamos muestras aleatorias de cada estrato.
 
 #-----------Teorema del límite central--------------
-#Si tomas muchas muestras de cualquier población y calculas la media de cada muestra, esas medias se distribuirán de forma normal (curva de campana), sin importar cómo se vea la población original.
+# Si tomas muchas muestras de cualquier población y calculas la media de cada muestra, esas medias se distribuirán de forma normal (curva de campana)
+# sin importar cómo se vea la población original.
 
 #-----------¿Qué es el nivel de significancia?--------------
-#es el umbral que establecemos antes de realizar una prueba estadística para decidir si rechazamos o no la hipótesis nula.
+# es el umbral que establecemos antes de realizar una prueba estadística para decidir si rechazamos o no la hipótesis nula.
 
 #-----------Función de densidad de probabilidad--------------
-#una curva que describe todas las posibilidades de que ocurra un evento; Dónde es más probable que ocurran ciertos valores; Dónde es menos probable que ocurran otros valores
+# una curva que describe todas las posibilidades de que ocurra un evento
+# Dónde es más probable que ocurran ciertos valores
+# Dónde es menos probable que ocurran otros valores
 
 #-----------¿Qué es una prueba t?--------------
-#es un método estadístico que te ayuda a determinar si existe una diferencia significativa
-#tiene "colas más gruesas", lo que la hace más apropiada cuando trabajas con muestras pequeñas (menos de 30 observaciones) o cuando no conoces la desviación estándar de toda la población.
+# es un método estadístico que te ayuda a determinar si existe una diferencia significativa
+# tiene "colas más gruesas", lo que la hace más apropiada cuando trabajas con muestras pequeñas (menos de 30 observaciones) o cuando no conoces la desviación estándar de toda la población.
 # la hipótesis nula siempre implica la ausencia de diferencias.
 # Si el valor p es mayor que el valor alfa ⇒ no podemos rechazar H₀.
-
