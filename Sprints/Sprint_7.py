@@ -253,6 +253,8 @@ comando1 | comando2 | comando3 | ...
 ls | grep "data"
 ls | tail -1
 
+
+
 #-----------History--------------
 history + enter
 history 10      ver los últimos 10
@@ -260,18 +262,6 @@ history 10      ver los últimos 10
 !2     re-ejecutar el comando 2
 history | grep "ls"     pipear el resultado y luego buscar 
 history > mi_historial.txt      guardar historial
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #-----------Creando entornos virtuales desde conda--------------
@@ -713,15 +703,6 @@ for loc_info in aw_location_res.json():
         loc_info['Country']['EnglishName'],
         loc_info['AdministrativeArea']['EnglishName']))
 
-
-
-
-
-
-
-
-
-
 import requests
 
 api_key = 'zC5JOYIAeAgn92Z9CJKUQE1ns3dvHeyf'
@@ -770,8 +751,6 @@ re = requests.get(url)
 response = re.json()
 print(response['artistDisplayName'])
 
-
-
 import requests
 
 base_url = 'https://collectionapi.metmuseum.org/'
@@ -782,22 +761,7 @@ response = requests.get(url)
 for dpt in response.json()['departments']:
     if 'Art' in dpt['displayName']:
         print(dpt)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 #----------Uso de api con apikey----------
 # streamlit run app.py    correr mi aplicacion del repositorio
 # http://localhost:8501/
@@ -902,207 +866,6 @@ la excepción AssertionError se lanza con un método de aserción si se proporci
 Ctrl+Shift+P
 Git: Clone
 https://github.com/Carolina-Lezama/experimento_uno.git   link de el repositorio
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import pandas as pd
 import numpy as np
