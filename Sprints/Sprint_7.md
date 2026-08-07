@@ -45,36 +45,36 @@ Pueden aceptar uno o varios argumentos, que son datos adicionales sobre los que 
 
 ### Muestra los archivos en orden inverso.
 
-ls -r
+    ls -r
 
 ### Muestra todos los archivos, incluidos los ocultos, en orden inverso.
 
-ls -r -a
-ls -ra
+    ls -r -a
+    ls -ra
 
 Los nombres de todos los archivos y directorios ocultos comienzan siempre por .
 
 ### Muestra los archivos y directorios dentro del directorio pasado como parametro en orden inverso
 
-ls -r sql_project
+    ls -r sql_project
 
 ### Mostrar un mensaje de ayuda detallado sobre ese comando en particular.
 
-ls --help
+    ls --help
 
 ### Abre el manual de usuario del comando ls
 
-man ls
+    man ls
 
 pwd responde a las siglas en ingles "print working directory": el comando pwd te muestra la ruta completa del directorio en el que te encuentras actualmente en la línea de comandos.
 
 ### Moverse a una carpeta
 
-cd ./intro_to_ml/
+    cd ./intro_to_ml/
 
 ### Nos llevaría directamente a Tu carpeta personal
 
-cd ~
+    cd ~
 
 clear no borra el historial de los comandos que has ejecutado. Simplemente limpia la visualización en la pantalla.
 Importante: Ten en cuenta que este historial de comandos se guarda solo mientras la ventana de la Terminal esté abierta.
@@ -83,58 +83,58 @@ Si presionas la tecla Tabulador dos veces rápidamente, la Terminal te mostrará
 
 ### Crea un nuevo directorio en el directorio actual.
 
-mkdir mi_nueva_carpeta
+    mkdir mi_nueva_carpeta
 
 ### Multiples directorios
 
-mkdir carpeta_uno carpeta_dos carpeta_tres
+    mkdir carpeta_uno carpeta_dos carpeta_tres
 
 ### Creando carpetas dentro de carpetas (subdirectorios); solo funcionará si la carpeta principal ya existe
 
-mkdir mi_carpeta_principal/mi_subcarpeta
+    mkdir mi_carpeta_principal/mi_subcarpeta
 
 ### p sirve para crear ambas si ninguna existe
 
-mkdir -p mi_carpeta_principal/mi_subcarpeta
+    mkdir -p mi_carpeta_principal/mi_subcarpeta
 
 ### Mostrar cada accion que se esta realizando
 
-mkdir -p -v mi_carpeta_principal/mi_subcarpeta
+    mkdir -p -v mi_carpeta_principal/mi_subcarpeta
 
 ### Eliminar directorios vacios
 
-~$ rm -d mi_carpeta_temporal
-~$ rm --dir mi_carpeta_temporal
+    ~$ rm -d mi_carpeta_temporal
+    ~$ rm --dir mi_carpeta_temporal
 
 ### Pedir confirmacion
 
-~$ rm -d -i mi_carpeta_temporal
+    ~$ rm -d -i mi_carpeta_temporal
 
 ### Comando echo: mostrar texto en la pantalla
 
-~$ echo Hola, mundo de la CLI  
-~$ echo -e 'Quiero aprender sobre la CLI.\n¡Todo programador la conoce!'
+    ~$ echo Hola, mundo de la CLI
+    ~$ echo -e 'Quiero aprender sobre la CLI.\n¡Todo programador la conoce!'
 
 -e habilita los caracteres de escape
 
 echo "El inicio de una gran aventura..." > aventura_parte1.txt
 echo "Y así continuó el viaje." > aventura_parte2.txt
 
-~$ echo "Aprendiendo comandos básicos de la CLI" > mi_primer_archivo.txt
+    ~$ echo "Aprendiendo comandos básicos de la CLI" > mi_primer_archivo.txt
 
 Enviar su salida directamente a un archivo de texto. Si el archivo.txt no existe, lo creará automáticamente. Si ya existe, el símbolo > sobrescribirá todo su contenido con el nuevo texto.
 
-~$ echo "¡Este es un nuevo renglón!" >> mi_primer_archivo.txt
+    ~$ echo "¡Este es un nuevo renglón!" >> mi_primer_archivo.txt
 
 Agregar nuevo texto al final de un archivo existente sin borrar su contenido
 
 ### Comando cat: mostrar el contenido de un archivo de texto en la pantalla
 
-~$ cat mi_primer_archivo.txt  
-cat importante.txt
-cat aventura_parte1.txt aventura_parte2.txt
+    ~$ cat mi_primer_archivo.txt
+    cat importante.txt
+    cat aventura_parte1.txt aventura_parte2.txt
 
-cat > m_nota.txt
+    cat > m_nota.txt
 
 crear un archivo de texto y escribir en él, escribe el texto que quieras y cuando termines, presiona Ctrl + D para guardar y salir
 
@@ -148,31 +148,306 @@ crea archivos vacíos de forma instantánea. A estos se les llama "archivos dumm
 
 ### Comando mv: mover la ubicacion del archivo
 
-~$ touch mi_documento.txt  
-~$ mkdir mis_documentos
-~$ mv mi_documento.txt mis_documentos
+    ~$ touch mi_documento.txt
+    ~$ mkdir mis_documentos
+    ~$ mv mi_documento.txt mis_documentos
 
-~$ mkdir ~/archivos_importantes
-~$ mv mi_documento.txt ~/archivos_importantes
+    ~$ mkdir ~/archivos_importantes
+    ~$ mv mi_documento.txt ~/archivos_importantes
 
-~$ touch archivo_uno.txt archivo_dos.txt archivo_tres.txt
-~$ mkdir carpeta_destino
-~$ mv archivo_uno.txt archivo_dos.txt archivo_tres.txt carpeta_destino
+    ~$ touch archivo_uno.txt archivo_dos.txt archivo_tres.txt
+    ~$ mkdir carpeta_destino
+    ~$ mv archivo_uno.txt archivo_dos.txt archivo_tres.txt carpeta_destino
 
 mover carpetas
 
-~$ mkdir mi_carpeta_antigua mis_archivos  
-~$ mv mi_carpeta_antigua mis_archivos
+    ~$ mkdir mi_carpeta_antigua mis_archivos
+    ~$ mv mi_carpeta_antigua mis_archivos
 
 cambiar el nombre de un archivo, al renombrar un archivo a un nombre que ya existe, ya que el archivo existente será reemplazado
 
-~$ touch documento_viejo.txt
-~$ mv documento_viejo.txt documento_nuevo.txt
+    ~$ touch documento_viejo.txt
+    ~$ mv documento_viejo.txt documento_nuevo.txt
 
 ### Comando cp(ubicacion y nombre): copiar carpeta con documentos dentro
 
-~$ touch informe_original.txt
-~$ cp informe_original.txt copia_informe.txt
+    ~$ touch informe_original.txt
+    ~$ cp informe_original.txt copia_informe.txt
 
-~$ mkdir ~/respaldo_documentos  
-~$ cp -r mis_documentos ~/respaldo_documentos
+    ~$ mkdir ~/respaldo_documentos
+    ~$ cp -r mis_documentos ~/respaldo_documentos
+
+## Caracteres comodines
+
+Para representar uno o varios caracteres en un patrón de búsqueda
+
+### El comodín asterisco (\*)
+
+    ~$ ls foto_*.jpg
+    ~$ rm temp_*
+    ~$ ls *.jpg
+
+coincide con la parte inicial de los nombres de archivo, cualquier secuencia de caracteres que haya en medio (como la fecha) ypuede coincidir con cualquier cantidad de caracteres (incluso ninguno)
+
+### El comodín signo de interrogación (?)
+
+coincide exactamente con un carácter
+
+    ~$ ls foto_?.jpg
+
+### El comodín corchetes ([])
+
+Definir un conjunto de caracteres permitidos en una posición dada
+
+    ~$ ls foto_[123a].jpg
+    ~$ ls [A-Z]*
+
+Listar solo las fotos que tienen un único carácter después del guion bajo que sea un dígito del 1 al 3 o la letra 'a'
+
+- [a-z] coincide con cualquier letra minúscula (a hasta z).
+- [A-Z] coincide con cualquier letra mayúscula (A hasta Z).
+- [0-9] coincide con cualquier dígito (0 hasta 9).
+
+### El comodín llaves ({})
+
+aplicar un comando a múltiples patrones alternativos
+
+    ~$ ls foto_*.{jpg,png,jpeg}
+    ls {file*.txt,e[vw]e.txt}
+    ls {file?.txt,eve.txt,ewe.txt}
+
+## Head y Tail
+
+Por defecto muestra las primeras o ultimas 10 lineas
+
+    ~$ head nombres.txt
+    ~$ head -n 4 nombres.txt
+
+## Contar palabras
+
+    ~$ wc archivo.txt
+
+### Resultado de salida:
+
+- 15 120 850 archivo.txt
+- 15 → número de líneas
+- 120 → número de palabras
+- 850 → número de bytes (caracteres)
+
+### Uso de vi
+
+    vi my_new_text_file.txt
+
+crear un nuevo archivo o abrir uno ya existente
+
+- entrar al modo de inserción presionando i
+- volver al modo comando usando esc
+
+Comandos predecedidos por :
+
+- :wq guardar y salir.
+- ZZ igual que :wq
+- :q! para salir del archivo sin guardar los cambios.
+
+Desde modo comando:
+
+- dd para borrar una línea seleccionada.
+- x para borrar un carácter seleccionado.
+- r para reemplazar un carácter seleccionado.
+
+## Comando find
+
+buscar por nombre, (el punto . representa el directorio actual); esto se puede reemplazar con la ruta completa del directorio donde quieres iniciar la búsqueda
+
+    find . -name datos_importantes.csv
+    find . -name "*.csv"
+
+    find . -iname datos_importantes.csv
+
+buscar sin importar mayúsculas o minúsculas
+
+Buscar por tipo:
+
+    find . -type d
+
+buscar solo directorios
+
+    find . -type f
+
+buscar solo archivos
+
+    find /home/ -type f -name "log_file_*"
+
+## Comando grep
+
+permite buscar patrones específicos dentro del contenido de uno o varios archivos de texto. Distingue entre mayúsculas y minúsculas
+
+    grep "dato" ejemplo.txt
+
+encontrar todas las líneas que contienen la palabra
+
+    grep -w "dato" ejemplo.txt
+
+buscar la palabra exacta
+
+    grep -iw "dato" ejemplo.txt
+
+ignorar mayúsculas y minúsculas
+
+    grep -iw "dato" *
+
+buscar en todos los archivos de texto del directorio actual
+
+    grep -l "datos" ejemplo.txt datos_uno.txt info.txt
+
+mostrar solo los nombres de los archivos que contienen el patrón buscado
+
+## Ver alias(comandos rapidos personalizados)
+
+    ~$ alias
+
+    alias nombre_del_atajo="comando_a_ejecutar"     crear un alias
+
+    alias ll="ls -la"       (sin espacios )
+
+    alias irproyecto="cd /home/tu_usuario/trabajo/mi_proyecto_genial"
+
+    alias moverseguro="mv -i"
+
+Eliminar un alias:
+
+    unalias irproyecto
+
+## Crear alias permanentes
+
+1. abrir el archivo de configuración de bash, vi solo es un ejemplo
+
+   vi ~./bashrc
+
+Mis alias personalizados:
+
+    alias cdp="cd /home/my_amazing_project"
+    alias smv="mv -i”
+
+## Usar alias
+
+puedes usar lsr como si fuera un comando normal, seguido de los argumentos que el comando original:
+
+    lsr /home/usuario
+
+## Ver variables de entorno
+
+saber el valor de una variable en particular:
+
+    echo $HOME
+
+crear una variable de entorno temporal y mostrarla:
+
+    MI_VARIABLE="mi primer valor"
+    echo $MI_VARIABLE
+
+hacer que la variable esté disponible para otros programas y scripts iniciados desde la Terminal actual:
+
+    export MI_VARIABLE
+    export OTRA_VARIABLE="otro valor"
+
+Nota: solo durará mientras tu ventana de la Terminal esté abierta
+
+## Pipes
+
+Te permiten conectar la salida de un comando directamente a la entrada de otro
+
+    comando1 | comando2 | comando3 | ...
+    ls | grep "data"
+    ls | tail -1
+
+## History
+
+Ver los últimos 10:
+
+    history + enter
+    history 10
+
+Re-ejecutar el comando 2:
+
+    !2
+    history | grep "ls"     # Pipear el resultado y luego buscar
+    history > mi_historial.txt     # Guardar historial
+
+## Creando entornos virtuales desde conda
+
+1. tenemos que estar en la ubicacion donde se creara
+
+   conda create --name mi_entorno
+
+### activar el entorno virtual
+
+    conda activate mi_entorno
+
+### desactivar el entorno virtual
+
+    conda deactivate
+
+### hacer esto dentro del entorno virtual para instalar solo aqui
+
+    conda install -c plotly plotly
+    conda install --name mi_entorno scipy
+
+### crear e intalar a la vez
+
+    conda create --name mi_entorno scipy
+
+### versiones especificas
+
+    conda create --name mi_entorno python=3.9
+    conda install --name mi_entorno scipy=0.15.0
+
+### archivo con los nombres de las librerías y sus versiones exactas
+
+    conda list --export > requirements.txt
+
+### crear entonro con las especificaciones del .txt
+
+    conda env create --name mi_nuevo_entorno --file requirements.txt
+    conda create --name customers_analysis python=3.7 pandas=1.5.3
+    conda install --name customers_analysis pandas=1.5.3 python=3.7
+
+    conda create --name customers_analysis python=3.7
+
+y luego:
+
+    conda install pandas=1.5.3
+
+## Comando clon en git
+
+    git clone [URL_DEL_REPOSITORIO]
+    git clone https://github.com/Carolina-Lezama/numpy
+
+## Comando pull en git(actualizar el repositorio local con los cambios del remoto)
+
+    git pull
+
+    C:\Users\michi>cd numpy
+    C:\Users\michi\numpy>git pull
+
+## Comando status en git(ver si hubo cambios en el repositorio)
+
+    git status
+
+## Comando add en git(preparar los archivos al area de stage para el siguiente commit)
+
+    git add [archivo]
+    git add .
+
+    C:\Users\michi\Downloads\numpy>git add .
+
+## Comando commit en git(guardar los cambios en el repositorio como punto de control)
+
+    git commit -m "Descripción de los cambios"
+    git commit -m "Columna nombre y apellido agregada"
+
+    C:\Users\michi\Downloads\numpy>git commit -m "add notes file"
+
+## Comando push en git(subir los cambios a github)
+
+    git push

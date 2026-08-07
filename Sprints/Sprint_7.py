@@ -1,134 +1,13 @@
-
-
-
-
-
-
-# #-----------Caracteres comodines--------------
-# para representar uno o varios caracteres en un patrón de búsqueda
-
-# El comodín asterisco (*)
-# ~$ ls foto_*.jpg
-# ~$ rm temp_*
-# ~$ ls *.jpg
-# coincide con la parte inicial de los nombres de archivo, * coincide con cualquier secuencia de caracteres que haya en medio (como la fecha)
-# puede coincidir con cualquier cantidad de caracteres (incluso ninguno)
-
-# El comodín signo de interrogación (?)
-# coincide exactamente con un carácter
-# ~$ ls foto_?.jpg
-
-# El comodín corchetes ([])
-# definir un conjunto de caracteres permitidos en una posición dada
-# ~$ ls foto_[123a].jpg
-# ~$ ls [A-Z]*
-# listar solo las fotos que tienen un único carácter después del guion bajo que sea un dígito del 1 al 3 o la letra 'a'
-# [a-z] coincide con cualquier letra minúscula (a hasta z).
-# [A-Z] coincide con cualquier letra mayúscula (A hasta Z).
-# [0-9] coincide con cualquier dígito (0 hasta 9).
-
-# El comodín llaves ({})
-# aplicar un comando a múltiples patrones alternativos
-# ~$ ls foto_*.{jpg,png,jpeg}
-# ls {file*.txt,e[vw]e.txt}
-# ls {file?.txt,eve.txt,ewe.txt}
-
-# #-----------Head y Tail--------------
-# #por defecto son 10 lineas
-# # ~$ head nombres.txt
-# ~$ head -n 4 nombres.txt
-
-# #-----------Contar palabras-------------
-# ~$ wc archivo.txt
-# 15   120   850 archivo.txt
-# 15 → número de líneas
-# 120 → número de palabras
-# 850 → número de bytes (caracteres)
-
-# #----------Uso de vi-------------
-# vi my_new_text_file.txt     crear un nuevo archivo o abrir uno ya existente
-
-# entrar al modo de inserción presionando i
-# volver al modo comando usando esc
-
-# comandos predecedidos por :
-# :wq guardar y salir.
-# ZZ igual que :wq
-# :q! para salir del archivo sin guardar los cambios.
-
-# desde modo comando:
-# dd para borrar una línea seleccionada.
-# x para borrar un carácter seleccionado.
-# r para reemplazar un carácter seleccionado.
-
-# #-----------Comando find--------------
-# buscar por nombre
-# find . -name datos_importantes.csv
-# find . -name "*.csv"
-# (el punto . representa el directorio actual); esto se puede reemplazar con la ruta completa del directorio donde quieres iniciar la búsqueda
-
-# find . -iname datos_importantes.csv     buscar sin importar mayúsculas o minúsculas
-
-# buscar por tipo
-# find . -type d    buscar solo directorios
-# find . -type f    buscar solo archivos
-# find /home/ -type f -name "log_file_*"
-
-# #-----------Comando grep--------------
-permite buscar patrones específicos dentro del contenido de uno o varios archivos de texto.
-distingue entre mayúsculas y minúsculas
-
-grep "dato" ejemplo.txt         encontrar todas las líneas que contienen la palabra
-grep -w "dato" ejemplo.txt      buscar la palabra exacta
-grep -iw "dato" ejemplo.txt     ignorar mayúsculas y minúsculas
-
-grep -iw "dato" *      buscar en todos los archivos de texto del directorio actual
-grep -l "datos" ejemplo.txt datos_uno.txt info.txt    mostrar solo los nombres de los archivos que contienen el patrón buscado
-
-# #-----------Ver alias(comandos rapidos personalizados)--------------
-# ~$ alias
-
-alias nombre_del_atajo="comando_a_ejecutar"     crear un alias
-alias ll="ls -la"       sin espacios 
-alias irproyecto="cd /home/tu_usuario/trabajo/mi_proyecto_genial"
-alias moverseguro="mv -i"
-
-unalias irproyecto      eliminar un alias
-
-# #-----------Crear alias permanentes--------------
-vi ~./bashrc      abrir el archivo de configuración de bash, vi solo es un ejemplo
-
-# mis alias personalizados
-alias cdp="cd /home/my_amazing_project"
-alias smv="mv -i”
-
-# #-----------Usar alias--------------
-lsr /home/usuario      puedes usar lsr como si fuera un comando normal, seguido de los argumentos que el comando original
-
-#-----------Ver variables de entorno--------------
-env
-printenv
-
-echo $HOME     saber el valor de una variable en particular
-
-MI_VARIABLE="mi primer valor"       crear una variable de entorno temporal
-echo $MI_VARIABLE
-
-export MI_VARIABLE     hacer que la variable esté disponible para otros programas y scripts iniciados desde la Terminal actual
-export OTRA_VARIABLE="otro valor"
-solo durará mientras tu ventana de la Terminal esté abierta
-
 #-----------Importar variables desde pyhton--------------
 from dotenv import load_dotenv
 import os
 
-archivo .env
-RUTA_DATOS=/home/tu_usuario/proyecto/data
+# Informacion de ejemplo que pude contener el archivo .env
+RUTA_DATOS='/home/tu_usuario/proyecto/data' # Puede o no llevar las ''
 API_KEY_SERVICIO_X=abcdef123456
 PATH_MODELO_ML=modelos/classificador.pt
 UMBRAL_CONFIANZA=0.85
 
-archivo .py
 # Carga las variables de entorno desde el archivo .env (si existe)
 load_dotenv()
 
@@ -143,71 +22,14 @@ print(f"Clave de API del Servicio X (parcial): {api_key_x[:5] if api_key_x else 
 print(f"Ruta al modelo de ML: {path_modelo}")
 print(f"Umbral de confianza: {umbral}")
 
-#-----------Pipes--------------
-te permiten conectar la salida de un comando directamente a la entrada de otro
-
-comando1 | comando2 | comando3 | ...
-ls | grep "data"
-ls | tail -1
 
 
 
-#-----------History--------------
-history + enter
-history 10      ver los últimos 10
-
-!2     re-ejecutar el comando 2
-history | grep "ls"     pipear el resultado y luego buscar 
-history > mi_historial.txt      guardar historial
 
 
-#-----------Creando entornos virtuales desde conda--------------
-conda create --name mi_entorno       tenemos que estas en la ubicacion donde se creara
-conda activate mi_entorno       activar el entorno virtual
-conda deactivate      desactivar el entorno virtual
 
-conda install -c plotly plotly     hacer esto dentro del entorno virtual para instalar solo aqui
-conda install --name mi_entorno scipy     o sin estar activo
 
-conda create --name mi_entorno scipy     crear e intalar a la vez
 
-conda install --name mi_entorno scipy=0.15.0
-conda create --name mi_entorno python=3.9    versiones especificas
-
-conda list --export > requirements.txt      archivo con los nombres de las librerías y sus versiones exactas
-
-conda env create --name mi_nuevo_entorno --file requirements.txt    crear entonro con las especificaciones del .txt
-conda create --name customers_analysis python=3.7 pandas=1.5.3
-conda install --name customers_analysis pandas=1.5.3 python=3.7
-conda create --name customers_analysis python=3.7 y luego conda install pandas=1.5.3
-
-#-----------Comando clon en git--------------
-git clone [URL_DEL_REPOSITORIO]     clonar-descargar algun repositorio
-git clone https://github.com/Carolina-Lezama/numpy
-
-#-----------Comando pull en git--------------
-git pull    actualiza el repositorio local con los cambios del remoto
-
-C:\Users\michi>cd numpy
-C:\Users\michi\numpy>git pull
-
-#-----------Comando status en git--------------
-git status      ver si hubo cambios en el repositorio
-
-#-----------Comando add en git--------------
-git add [archivo]    preparar los archivos al area de stage para el siguiente commit
-git add .
-
-C:\Users\michi\Downloads\numpy>git add .
-
-#-----------Comando commit en git--------------
-git commit -m "Descripción de los cambios"  guardar los cambios en el repositorio como punto de control
-git commit -m "Columna nombre y apellido agregada"
-
-C:\Users\michi\Downloads\numpy>git commit -m "add notes file"
-
-#-----------Comando push en git--------------
-git push   subir los cambios a github
 
 #-----------Correr scripts en cmd--------------
 python3 image_rotator.py
