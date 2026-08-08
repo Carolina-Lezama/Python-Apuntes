@@ -22,45 +22,10 @@ print(f"Clave de API del Servicio X (parcial): {api_key_x[:5] if api_key_x else 
 print(f"Ruta al modelo de ML: {path_modelo}")
 print(f"Umbral de confianza: {umbral}")
 
-
-
-
-
-
-
-
-
-
-#-----------Correr scripts en cmd--------------
-python3 image_rotator.py
-
-#-----------Correr scripts con parametros en cmd--------------
-py script_imagenes_parametros.py tripleten_logo.png output.png 180  
-
-Las opciones se pueden pasar en cualquier orden (no son posicionales). 
-Los argumentos son obligatorios, las opciones no lo son (de ahí su nombre).
-
-#-----------Instalar paquetes--------------
-py -m pip install Pillow  
-
-#-----------Opciones en cmd--------------
---option=value, --option value      -o=value -o value  hacen el mismo efecto
-Un valor por defecto se especifica con el parámetro default= en add_argument().
-parser.add_argument('--angle', '-a', type=int, default=90) # tercer argumento: ángulo
-
-$ python3 image_rotator.py tripleten_logo.jpeg --angle 90 output.png
-
-#----------Flags--------------
-son opciones booleanas especiales
-debemos incluir el parámetro action= en add_argument(). el flag se establecerá en False por defecto
-parser.add_argument('-i', '--info', action='store_true')
-
-python3 image_rotator.py tripleten_logo.jpeg --angle 180 output.png -i      activar la flag
-
 #----------Argumentos posicionales--------------
 def trip_price(dist_miles, mpg, price, loc_from, loc_to):
         total_price = dist_miles * price / mpg
-    print(f'Un viaje de {loc_from} a {loc_to} costará ${total_price}')
+        print(f'Un viaje de {loc_from} a {loc_to} costará ${total_price}')
 
 trip_price(409, 35, 5.1, 'A', 'B')
 
@@ -72,7 +37,8 @@ def trip_price(dist_miles, mpg, price, loc_from, loc_to):
 trip_price(dist_miles=409, loc_from='A', loc_to='B', mpg=35, price=5.1)
 
 #----------Argumentos predeterminados--------------
-def trip_price(dist_miles, mpg, price, loc_from='A', loc_to='B'): #tenemos que poner todos ellos después de los parámetros que no tienen valores predeterminados
+def trip_price(dist_miles, mpg, price, loc_from='A', loc_to='B'): 
+    # Poner los parametros obligatorios para todos aquellos que no tienen valores predeterminados
     total_price = dist_miles * price / mpg
     print(f'Un viaje de {loc_from} a {loc_to} costará ${total_price}')
 
@@ -81,13 +47,16 @@ trip_price(409, 35, price=3.8)
 #----------Tipos en los argumentos--------------
 def list_of_words(text: str, sep: str = " ") -> list:
     return text.split(sep)
-text debe ser tipo str.el argumento opcional sep también debe ser str (el valor por defecto es " ").  -> list especifica que list_of_words() devolverá una lista.
-mismo comportamiento a uno donde no se especifica
+
+# text debe ser tipo str.
+# El argumento opcional sep también debe ser str (el valor por defecto es " ").  
+# -> list especifica que list_of_words() devolverá una lista.
 
 #----------Comprobación de tipo--------------
-Detecta errores de tipo antes de que tu código se ejecute.
-$ mypy list_of_words.py 
-revisó nuestro script en busca de incumplimientos, pero no lo ejecutó.
+# Detecta errores de tipo antes de que tu código se ejecute.
+# Revisó nuestro script en busca de incumplimientos, pero no lo ejecutó.
+
+# $ mypy list_of_words.py 
 
 #----------Try-except--------------
 try:
@@ -105,7 +74,9 @@ except Exception as error_msg:
     im = Image.open('default_input.png')
 
 #----------Try-except-else--------------
-qué ocurrirá en el caso de que no se encuentre ningún error
+# Se ejecuta única y exclusivamente si el bloque try finaliza con éxito, es decir, si no se produjo ninguna excepción.
+# Si el código dentro del try lanza un error y es atrapado por el except, el bloque else se ignora por completo.
+
 try:
     im = Image.open(args.input_file)
     
@@ -118,11 +89,9 @@ else:
     rotated.save(args.output_file)
     print("Ejecución fluida'")
 
-#----------Instalar paquetes-------------
-pip install --user Pillow
-
 #----------importacion------------
 import re
+
 def check_email(string: str):
     '''
     usa expresiones regulares para comprobar el formato de la dirección de correo electrónico
@@ -132,6 +101,7 @@ def check_email(string: str):
         print('correcto')
     else:
         print('comprobar dirección de correo electrónico')
+
 def check_age(age: int):
     if age >= 50:
         print('acceso permitido')
@@ -143,7 +113,8 @@ email = input()
 module.check_email(email)
 
 #----------Ejecutar solo en main------------
-#Si importamos module_1.py en otro script, la función estará disponible, pero el bloque dentro de if __name__ == '__main__' no se ejecutará
+# Si importamos module_1.py en otro script, la función estará disponible, pero el bloque dentro de if __name__ == '__main__' no se ejecutará
+
 def useful_function():
     print('funcionando')
 
@@ -155,22 +126,26 @@ if __name__ == '__main__':
 # paquetes incorporados
 import math
 import os
+
 # paquetes de terceros
 import pandas
 import numpy
+
 # mi propio módulo
 import mymodule
+
 # el resto del programa
 
 #----------Crear clases-----------
 class Knight: # crear la clase Knight
     def __init__(self, name):
-        # establecer parámetros
+        # Establecer parámetros
         self.health = 100
         self.damage = 25
         self.knowledge = 20
         self.name = name
 
+# Instanciacion de objetos
 arthur = Knight('Arthur')
 richard = Knight('Richard')
 
@@ -188,20 +163,24 @@ print(arthur.health)
 print(arthur.__dict__)
 
 #----------Metodos en clases----------
+# self significa: La llamada a estos métodos afecta a la instancia que los llama
+
 class Knight:
-    def __init__(self, name):
+    def __init__(self, name): # El constructor recibe argumentos al instanciar
         self.health = 100
         self.damage = 25
         self.knowledge = 20
         self.name = name
-    
-    def heal(self): #self significa que la llamada a estos métodos afecta a la instancia que los llama
+
+    # Metodos estatico
+    def heal(self): 
         self.health += 20
     def learn(self):
-        self.knowledge += 5 #estatico
-        
+        self.knowledge += 5 
+
+    # Metodos dinamicos
     def heal2(self, amount):
-        self.health += amount #dinamico
+        self.health += amount 
     def learn2(self, amount):
         self.knowledge += amount
 
@@ -216,21 +195,21 @@ arthur.heal()
 arthur.learn()
 
 #----------Metodos estaticos----------
-# no están vinculados a una instancia específica de una clase ni requieren el parámetro self
-# pueden ser llamados sin crear un objeto de esa clase 
-# no tienen la capacidad de modificar el estado de un objeto
+# No están vinculados a una instancia específica de una clase ni requieren el parámetro self
+# Pueden ser llamados sin crear un objeto de esa clase 
+# Mo tienen la capacidad de modificar el estado de un objeto
 
 class Stock:
-      def __init__(self, ticker, amount):
+    def __init__(self, ticker, amount):
             self.ticker = ticker
             self.amount = amount
 
-      @staticmethod
+    @staticmethod
     def show_current_price(ticker):
-        current = # Aquí implementarías código
+        current = ticker + 2 # Aquí implementarías código
         print(current)
 
-Stock.show_current_price('Apple') #utilizar metodo estatico
+Stock.show_current_price('Apple') # Utilizar metodo estatico
 
 #----------Metodos de clase----------
 class Stock:
@@ -249,7 +228,9 @@ class Stock:
 abc = Stock.from_string('ABC 10 1.5')
 
 #----------Herencia----------
-class Character: #clase padre
+
+# Clase padre
+class Character: 
     def __init__(self, name):
         self.name = name
         self.health = 100
@@ -258,11 +239,22 @@ class Character: #clase padre
     def learn(self, value:int=20):
         self.knowledge += value
 
-class Knight(Character): #clase hijo
+# Clase hija
+class Knight(Character): 
     def __init__(self, name):
-        Character.__init__(self, name) # se hereda el constructor de la clase padre
-        self.damage = 25 # atributo añadido
-        self.knowledge = 20 # atributo añadido
+        Character.__init__(self, name) # Se hereda el constructor de la clase padre
+
+        # Atributos añadidos
+        self.damage = 25 
+        self.knowledge = 20 
+
+
+
+
+
+
+
+
 
 class Peasant(Character):
     def __init__(self, name):

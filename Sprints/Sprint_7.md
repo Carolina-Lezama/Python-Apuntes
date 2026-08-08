@@ -451,3 +451,44 @@ y luego:
 ## Comando push en git(subir los cambios a github)
 
     git push
+
+## Correr scripts en cmd
+
+    python3 image_rotator.py
+
+## Correr scripts con parametros en cmd
+
+    py script_imagenes_parametros.py tripleten_logo.png output.png 180
+
+Los argumentos son obligatorios, las opciones no lo son (de ahí su nombre). Las opciones se pueden pasar en cualquier orden (no son posicionales).
+
+## Instalar paquetes
+
+    py -m pip install Pillow
+    pip install --user Pillow
+
+## Opciones en cmd
+
+hace el mismo efecto:
+
+    --option=value, --option value
+
+que:
+
+    -o=value -o value
+
+Un valor por defecto se especifica con el parámetro default= en add_argument().
+
+    parser.add_argument('--angle', '-a', type=int, default=90) # tercer argumento: ángulo
+
+    $ python3 image_rotator.py tripleten_logo.jpeg --angle 90 output.png
+
+## Flags
+
+Son opciones booleanas especiales, debemos incluir el parámetro action= en add_argument(). el flag se establecerá en False por defecto
+
+    parser.add_argument('-i', '--info', action='store_true')
+
+Activar la flag:
+
+    python3 image_rotator.py tripleten_logo.jpeg --angle 180 output.png -i
